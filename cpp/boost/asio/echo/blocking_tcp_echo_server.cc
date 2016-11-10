@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 {
 	try {
 		if (argc != 2) {
-			std::cerr << "Usage: "<< argv[0] << " <port>\n";
+			std::cerr << "Usage: " << argv[0] << " <port>\n";
 			return 1;
 		}
 

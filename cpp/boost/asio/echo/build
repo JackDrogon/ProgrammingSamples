@@ -1,0 +1,4 @@
+#!/bin/sh
+
+g++ async_echo_server.cc -std=c++11 -lboost_system-mt -o async_echo_server
+g++ blocking_tcp_echo_server.cc -std=c++11 -lboost_system-mt -o blocking_tcp_echo_server
