@@ -1,0 +1,2 @@
+#!/bin/sh
+g++ basic.cc -lbenchmark -o basic
