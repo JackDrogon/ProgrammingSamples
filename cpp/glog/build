@@ -1,0 +1,2 @@
+#!/bin/sh
+g++ hello.cc -lglog -o hello
