@@ -16,12 +16,11 @@ func min(a, b int) int {
 	return b
 }
 
-func tbPrint(x, y int, fg, bg termbox.Attribute, msg string) {
+func printMsg(x, y int, fg, bg termbox.Attribute, msg string) {
 	for _, c := range msg {
 		termbox.SetCell(x, y, c, fg, bg)
 		x++
 	}
-	termbox.Flush()
 }
 
 func drawCircle() {
@@ -31,8 +30,8 @@ func drawCircle() {
 	r := min(w/2, h/2) - 1
 	for b := 0; b <= 2*r; b++ {
 		x := int(math.Sqrt(float64(r*r)-math.Abs(float64(b-r))*math.Abs(float64(b-r))) * rate)
-		tbPrint(w/2-x, h/2-r+b, termbox.ColorRed, termbox.ColorDefault, ".")
-		tbPrint(w/2+x, h/2-r+b, termbox.ColorRed, termbox.ColorDefault, ".")
+		printMsg(w/2-x, h/2-r+b, termbox.ColorRed, termbox.ColorDefault, ".")
+		printMsg(w/2+x, h/2-r+b, termbox.ColorRed, termbox.ColorDefault, ".")
 	}
 }
 
