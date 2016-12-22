@@ -6,6 +6,7 @@ int main(int argc, char *argv[])
 	FLAGS_log_dir = '.';
 	google::InitGoogleLogging(argv[0]);
 
-	// ...
-	LOG(INFO) << "Found " << 10 << " cookies";
+	for (int i = 0; i < 1000000; ++i) {
+		LOG(INFO) << "Found " << i << " cookies";
+	}
 }
