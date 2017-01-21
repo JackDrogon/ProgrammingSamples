@@ -1,7 +1,7 @@
 #include <folly/CpuId.h>
 
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 using namespace std;
 
 static inline void _print(const string &s, bool b)
