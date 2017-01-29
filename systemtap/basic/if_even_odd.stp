@@ -1,0 +1,23 @@
+#!/usr/bin/env stap
+
+global odds, evens
+
+probe begin
+{
+	# "no" and "ne" are local integers, => 0
+	for ( i = 0; i < 10; ++i) {
+		if (i % 2) odds[no++] = i
+		else evens[ne++] = i
+	}
+	exit()
+}
+
+probe end
+{
+	foreach (x+ in odds) {
+		printf("odds[%d] = %d\n", x, odds[x])
+	}
+	foreach (x+ in evens) {
+		printf("evens[%d] = %d\n", x, evens[x])
+	}
+}
