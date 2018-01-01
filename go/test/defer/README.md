@@ -1,0 +1,3 @@
+时间上os_exit_before本来不用测试的，毕竟在defer之前就已经退出，只是用来做对比试验的
+
+结论就是os_exit不会触发defer
