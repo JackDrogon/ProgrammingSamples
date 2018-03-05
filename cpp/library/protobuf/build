@@ -1,3 +1,3 @@
 #!/bin/sh
 protoc hello_world.proto --cpp_out=.
-g++ hello_world.proto.cc hello_world.pb.cc -lprotobuf -o hello_world
+g++ hello_world.proto.cc hello_world.pb.cc -lprotobuf -std=c++11 -o hello_world
