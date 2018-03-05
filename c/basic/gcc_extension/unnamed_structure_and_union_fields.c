@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-
 struct {
 	int a;
 	union {
@@ -13,6 +12,6 @@ struct {
 int main()
 {
 	foo.b = 10;
-	
+
 	return 0;
 }
