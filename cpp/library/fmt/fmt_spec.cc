@@ -1,6 +1,6 @@
 #include <fmt/format.h>
 using namespace fmt;
-using namespace fmt::literals; // for _a, _format
+// using namespace fmt::literals; // for _a, _format
 
 #include <iostream>
 using namespace std;
