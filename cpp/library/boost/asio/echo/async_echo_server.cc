@@ -10,7 +10,14 @@ using boost::asio::ip::tcp;
 class Session : public std::enable_shared_from_this<Session>
 {
 public:
-	explicit Session(tcp::socket socket) : socket_(std::move(socket)) {}
+	explicit Session(tcp::socket socket) : socket_(std::move(socket))
+	{
+		try {
+			remote_endpoint_ = socket.remote_endpoint();
+		} catch (std::exception &e) {
+			std::cerr << "Exception: " << e.what() << "\n";
+		}
+	}
 
 	void Start() { read(); }
 
@@ -24,6 +31,12 @@ private:
 		    [this, self](boost::system::error_code ec,
 				 std::size_t length) {
 			    if (!ec) {
+				    std::cout << "Receive data from "
+					      << remote_endpoint_ << " => ";
+				    std::cout.write(
+					data_,
+					static_cast<std::streamsize>(length))
+					<< '\n';
 				    write(length);
 			    }
 		    });
@@ -48,6 +61,7 @@ private:
 	char data_[kMaxLength];
 
 	tcp::socket socket_;
+	tcp::endpoint remote_endpoint_;
 };
 
 class Server
