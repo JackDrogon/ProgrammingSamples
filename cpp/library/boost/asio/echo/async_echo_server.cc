@@ -1,22 +1,26 @@
-#include <cstdlib>
 #include <iostream>
 #include <memory>
-#include <utility>
+using namespace std;
 
 #include <boost/asio.hpp>
-
 using boost::asio::ip::tcp;
 
-class Session : public std::enable_shared_from_this<Session>
+class Session : public enable_shared_from_this<Session>
 {
 public:
-	explicit Session(tcp::socket socket) : socket_(std::move(socket))
+	explicit Session(tcp::socket socket) : socket_(move(socket))
 	{
 		try {
-			remote_endpoint_ = socket.remote_endpoint();
+			remote_endpoint_ = socket_.remote_endpoint();
 		} catch (std::exception &e) {
 			std::cerr << "Exception: " << e.what() << "\n";
 		}
+	}
+
+	~Session()
+	{
+		cout << "Tuple(tcp, " << socket_.local_endpoint() << ", "
+		     << remote_endpoint_ << ") has been clsoed" << endl;
 	}
 
 	void Start() { read(); }
@@ -25,34 +29,39 @@ private:
 	void read()
 	{
 		auto self(shared_from_this());
-
 		socket_.async_read_some(
 		    boost::asio::buffer(data_, kMaxLength),
-		    [this, self](boost::system::error_code ec,
-				 std::size_t length) {
+		    [this, self](boost::system::error_code ec, size_t length) {
 			    if (!ec) {
-				    std::cout << "Receive data from "
-					      << remote_endpoint_ << " => ";
-				    std::cout.write(
-					data_,
-					static_cast<std::streamsize>(length))
-					<< '\n';
+				    cout << "Receive data from "
+					 << remote_endpoint_ << " => ";
+				    cout.write(data_,
+					       static_cast<streamsize>(length));
+				    if (length > 0 &&
+					data_[length - 1] != '\n') {
+					    cout << '\n';
+				    }
 				    write(length);
+				    return;
 			    }
+			    cout << remote_endpoint_ << " leave in read"
+				 << endl;
 		    });
 	}
 
-	void write(std::size_t length)
+	void write(size_t length)
 	{
 		auto self(shared_from_this());
-
 		boost::asio::async_write(
 		    socket_, boost::asio::buffer(data_, length),
 		    [this, self](boost::system::error_code ec,
-				 std::size_t /*length*/) {
+				 size_t /* length */) {
 			    if (!ec) {
 				    read();
+				    return;
 			    }
+			    cout << remote_endpoint_ << " leave in write"
+				 << endl;
 		    });
 	}
 
@@ -69,49 +78,54 @@ class Server
 public:
 	explicit Server(boost::asio::io_context &io_context,
 			unsigned short port)
-	    : acceptor_(io_context, tcp::endpoint(tcp::v4(), port)),
-	      socket_(io_context)
+	    : acceptor_(io_context, tcp::endpoint(tcp::v4(), port))
 	{
 	}
 
-	void Start() { accept(); }
+	~Server()
+	{
+		cout << "Server(" << acceptor_.local_endpoint()
+		     << ") has been closed" << endl;
+	}
+
+	void Start()
+	{
+		cout << "Listen on: " << acceptor_.local_endpoint() << endl;
+		accept();
+	}
 
 private:
 	void accept()
 	{
 		acceptor_.async_accept(
-		    socket_, [this](boost::system::error_code ec) {
+		    [=](boost::system::error_code ec, tcp::socket socket) {
 			    if (!ec) {
-				    std::make_shared<Session>(
-					std::move(socket_))
-					->Start();
+				    make_shared<Session>(move(socket))->Start();
 			    }
-
 			    accept();
 		    });
 	}
 
+private:
 	tcp::acceptor acceptor_;
-	tcp::socket socket_;
 };
 
 int main(int argc, char *argv[])
 {
 	try {
-		if (argc != 2) {
-			std::cerr << "Usage: " << argv[0] << " <port>\n";
-			return 1;
+		if (argc < 2) {
+			cerr << "Usage: " << argv[0] << " [port]" << endl;
+
+			return EXIT_FAILURE;
 		}
 
 		boost::asio::io_context io_context(1);
-
 		Server server(io_context,
-			      static_cast<unsigned short>(std::atoi(argv[1])));
+			      static_cast<unsigned short>(atoi(argv[1])));
 		server.Start();
-
 		io_context.run();
-	} catch (std::exception &e) {
-		std::cerr << "Exception: " << e.what() << "\n";
+	} catch (exception &e) {
+		cerr << "Exception: " << e.what() << endl;
 	}
 
 	return 0;
