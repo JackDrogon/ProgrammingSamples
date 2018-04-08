@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ "$#" -eq 0 ]; then
+	exit 1
+fi
+
+for file in "$*"; do
+	binary="${file%.*}"
+	g++ -std=c++11 -lboost_system-mt -o $binary $file
+done
+
