@@ -1,0 +1,21 @@
+require 'rake/clean'
+
+CLEAN.include("map", "map.o")
+
+task default: :run
+
+ENV["c++"] = "c++"
+
+rule '.o' => '.cc' do |r|
+  sh "#{ENV["c++"]} -c -o #{r.name} #{r.source}"
+end
+
+desc 'Run map'
+task run: :map do |t|
+  sh "./#{t.source}"
+end
+
+desc 'Compile map.o to map'
+file :map => ["map.o"] do |t|
+  sh "c++ -o #{t.name} #{t.prerequisites.join(' ')}"
+end
