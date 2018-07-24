@@ -9,6 +9,8 @@ struct Base {
 		cout << "print.... ";
 		hello();
 	}
+
+	virtual ~Base() = default;
 };
 
 struct Deliver : public Base {
