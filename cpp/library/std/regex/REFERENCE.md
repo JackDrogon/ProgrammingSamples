@@ -1,0 +1,7 @@
+- [MDN Regular Expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions)
+- [正则的扩展](http://es6.ruanyifeng.com/#docs/regex)
+- [C++ Regular Expressions with std::regex](https://www.regular-expressions.info/stdregex.html)
+- [ECMAScript proposal: s (dotAll) flag for regular expressions](https://github.com/tc39/proposal-regexp-dotall-flag)
+- [改 ECMAScript 正则表达式文法](https://zh.cppreference.com/w/cpp/regex/ecmascript)
+- [RegExp (Regular Expression) Objects](http://ecma-international.org/ecma-262/5.1/#sec-15.10)
+- [std::ECMAScript syntax](http://www.cplusplus.com/reference/regex/ECMAScript/)
