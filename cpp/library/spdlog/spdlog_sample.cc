@@ -1,15 +1,14 @@
-
-#include "deps/spdlog/spdlog.h"
-
 #include <iostream>
 #include <memory>
+
+#include <spdlog/spdlog.h>
+namespace spd = spdlog;
 
 void async_example();
 void syslog_example();
 void user_defined_example();
 void err_handler_example();
 
-namespace spd = spdlog;
 int main(int, char *[])
 {
 	try {
