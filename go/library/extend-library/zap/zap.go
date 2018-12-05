@@ -7,9 +7,10 @@ import (
 )
 
 func main() {
-	url := "www.drogon.com"
 	logger, _ := zap.NewProduction()
 	defer logger.Sync() // flushes buffer, if any
+
+	url := "www.drogon.com"
 	sugar := logger.Sugar()
 	sugar.Infow("Failed to fetch URL.",
 		// Structured context as loosely-typed key-value pairs.
