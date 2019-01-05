@@ -5,10 +5,10 @@ using namespace std;
 #include <boost/asio.hpp>
 using boost::asio::ip::tcp;
 
-class Session : public enable_shared_from_this<Session>
+class Session final : public enable_shared_from_this<Session>
 {
 public:
-	explicit Session(tcp::socket socket) : socket_(move(socket))
+	explicit Session(tcp::socket socket) noexcept : socket_(move(socket))
 	{
 		try {
 			remote_endpoint_ = socket_.remote_endpoint();
@@ -17,16 +17,17 @@ public:
 		}
 	}
 
-	~Session()
+	~Session() noexcept
 	{
-		cout << "Tuple(tcp, " << socket_.local_endpoint() << ", "
-		     << remote_endpoint_ << ") has been clsoed" << endl;
+		boost::system::error_code _ignored_ec;
+		cout << "Tuple(tcp, " << socket_.local_endpoint(_ignored_ec)
+		     << ", " << remote_endpoint_ << ") has been clsoed" << endl;
 	}
 
-	void Start() { read(); }
+	void Run() noexcept { read(); }
 
 private:
-	void read()
+	void read() noexcept
 	{
 		auto self(shared_from_this());
 		socket_.async_read_some(
@@ -73,34 +74,36 @@ private:
 	tcp::endpoint remote_endpoint_;
 };
 
-class Server
+class Server final
 {
 public:
-	explicit Server(boost::asio::io_context &io_context,
-			unsigned short port)
+	Server(boost::asio::io_context &io_context, unsigned short port)
 	    : acceptor_(io_context, tcp::endpoint(tcp::v4(), port))
 	{
 	}
 
-	~Server()
+	~Server() noexcept
 	{
-		cout << "Server(" << acceptor_.local_endpoint()
+		boost::system::error_code _ignored_ec;
+		cout << "Server(" << acceptor_.local_endpoint(_ignored_ec)
 		     << ") has been closed" << endl;
 	}
 
-	void Start()
+	void Run() noexcept
 	{
-		cout << "Listen on: " << acceptor_.local_endpoint() << endl;
+		boost::system::error_code _ignored_ec;
+		cout << "Listen on: " << acceptor_.local_endpoint(_ignored_ec)
+		     << endl;
 		accept();
 	}
 
 private:
-	void accept()
+	void accept() noexcept
 	{
 		acceptor_.async_accept(
 		    [=](boost::system::error_code ec, tcp::socket socket) {
 			    if (!ec) {
-				    make_shared<Session>(move(socket))->Start();
+				    make_shared<Session>(move(socket))->Run();
 			    }
 			    accept();
 		    });
@@ -122,7 +125,7 @@ int main(int argc, char *argv[])
 		boost::asio::io_context io_context(1);
 		Server server(io_context,
 			      static_cast<unsigned short>(atoi(argv[1])));
-		server.Start();
+		server.Run();
 		io_context.run();
 	} catch (exception &e) {
 		cerr << "Exception: " << e.what() << endl;
