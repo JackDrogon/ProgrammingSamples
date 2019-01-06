@@ -1,4 +1,16 @@
 #!/bin/sh
 
-g++ async_echo_server.cc -std=c++11 -lboost_system-mt -o async_echo_server
-g++ blocking_tcp_echo_server.cc -std=c++11 -lboost_system-mt -o blocking_tcp_echo_server
+compile_cpp () {
+        for file in "$@"
+        do
+                local CXXFLAGS='-std=c++17 -Weverything -Wno-c++98-compat -lboost_system'
+                local src=$file
+                local obj=$(echo $src | tr './' ' ' | awk '{print $(NF-1)}')
+                echo "Compile $src"
+                echo "g++ ${CXXFLAGS} -o $obj $src"
+                eval "command g++ ${CXXFLAGS} -o $obj $src"
+        done
+}
+
+compile_cpp "$*"
+
