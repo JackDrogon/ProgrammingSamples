@@ -29,10 +29,10 @@ public:
 private:
 	void read() noexcept
 	{
-		auto self(shared_from_this());
 		socket_.async_read_some(
 		    boost::asio::buffer(data_, kMaxLength),
-		    [this, self](boost::system::error_code ec, size_t length) {
+		    [this, self = shared_from_this()](
+			boost::system::error_code ec, size_t length) {
 			    if (!ec) {
 				    cout << "Receive data from "
 					 << remote_endpoint_ << " => ";
@@ -52,11 +52,10 @@ private:
 
 	void write(size_t length)
 	{
-		auto self(shared_from_this());
 		boost::asio::async_write(
 		    socket_, boost::asio::buffer(data_, length),
-		    [this, self](boost::system::error_code ec,
-				 size_t /* length */) {
+		    [this, self = shared_from_this()](
+			boost::system::error_code ec, size_t /* length */) {
 			    if (!ec) {
 				    read();
 				    return;
