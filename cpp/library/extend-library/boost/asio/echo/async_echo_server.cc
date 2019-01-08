@@ -8,7 +8,7 @@ using boost::asio::ip::tcp;
 class Session final : public enable_shared_from_this<Session>
 {
 public:
-	explicit Session(tcp::socket socket) noexcept : socket_(move(socket))
+	explicit Session(tcp::socket &&socket) noexcept : socket_(move(socket))
 	{
 		try {
 			remote_endpoint_ = socket_.remote_endpoint();
@@ -100,7 +100,7 @@ private:
 	void accept() noexcept
 	{
 		acceptor_.async_accept(
-		    [=](boost::system::error_code ec, tcp::socket socket) {
+		    [=](boost::system::error_code ec, tcp::socket &&socket) {
 			    if (!ec) {
 				    make_shared<Session>(move(socket))->Run();
 			    }
