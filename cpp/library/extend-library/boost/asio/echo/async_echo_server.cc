@@ -12,8 +12,8 @@ public:
 	{
 		try {
 			remote_endpoint_ = socket_.remote_endpoint();
-		} catch (std::exception &e) {
-			std::cerr << "Exception: " << e.what() << "\n";
+		} catch (exception &e) {
+			cerr << "Exception: " << e.what() << "\n";
 		}
 	}
 
