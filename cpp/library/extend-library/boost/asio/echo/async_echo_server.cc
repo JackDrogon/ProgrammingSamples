@@ -66,7 +66,7 @@ private:
 	}
 
 private:
-	enum { kMaxLength = 1024 };
+	constexpr static size_t kMaxLength = 1024;
 	char data_[kMaxLength];
 
 	tcp::socket socket_;
