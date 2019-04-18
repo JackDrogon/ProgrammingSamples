@@ -1,0 +1,11 @@
+#!/usr/bin/env stap
+
+probe process("redis-server").function("processCommand")
+{
+	print("Command:")
+	for (i = 0; i < $c->argc; ++i) {
+		print(" ")
+		print(user_string($c->argv[i]->ptr))
+	}
+	print("\n")
+}
