@@ -1,0 +1,17 @@
+#include <boost/tokenizer.hpp>
+#include <iostream>
+#include <string>
+
+int main()
+{
+	std::string str = ";;Hello|world||-foo--bar;yow;baz|";
+	typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
+	boost::char_separator<char> sep("-;|");
+	tokenizer tokens(str, sep);
+	for (tokenizer::iterator tok_iter = tokens.begin();
+	     tok_iter != tokens.end(); ++tok_iter)
+		std::cout << "<" << *tok_iter << "> ";
+	std::cout << "\n";
+
+	return EXIT_SUCCESS;
+}
