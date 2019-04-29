@@ -1,0 +1,13 @@
+# vim: filetype=ruby
+
+task :default => :go_to_store
+
+task :go_to_store do
+  puts "Going to the Store"
+end
+
+namespace :apple do
+  task :go_to_store do
+    puts "Going to the Apple Store"
+  end
+end
