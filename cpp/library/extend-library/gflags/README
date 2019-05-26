@@ -1,0 +1,10 @@
+DEFINE_bool
+DEFINE_int32
+DEFINE_int64
+DEFINE_uint64
+DEFINE_double
+DEFINE_string
+
+https://www.zybuluo.com/breakerthb/note/609329
+https://blog.csdn.net/jcjc918/article/details/50876613
+http://dreamrunner.org/blog/2014/03/09/gflags-jian-ming-shi-yong/
