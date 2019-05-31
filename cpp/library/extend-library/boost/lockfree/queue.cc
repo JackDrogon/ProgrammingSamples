@@ -44,8 +44,10 @@ int main()
 	for (auto i = 0; i < consumer_thread_cnt; ++i) {
 		consumer_threads.emplace_back([] {
 			int value;
-			while (!done && queue.pop(value)) {
-				++consumer_cnt;
+			while (!done) {
+				while (queue.pop(value)) {
+					++consumer_cnt;
+				}
 			}
 
 			// for remain elements
