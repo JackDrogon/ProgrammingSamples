@@ -28,7 +28,7 @@ private:
 	    callbacks_;
 };
 
-void DealFoo(::google::protobuf::Message *m)
+void DealFoo(hello_world::foo *m)
 {
 	hello_world::foo *msg = static_cast<hello_world::foo *>(m);
 	cout << "hello_world::foo => id: " << msg->id()
