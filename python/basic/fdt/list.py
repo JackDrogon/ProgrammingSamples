@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 # encoding: utf-8
 
+import sys
+sys.path.append("../wrapper")
+
 from pprint import pprint
+
 from run_decorator import runf
 
 
