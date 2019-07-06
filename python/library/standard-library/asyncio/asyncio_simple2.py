@@ -14,6 +14,7 @@ async def main():
     await say_after(1, 'hello')
     await say_after(2, 'world')
 
+    # 3 seconds
     print(f"finished at {time.strftime('%X')}")
 
 if __name__ == "__main__": asyncio.run(main())
