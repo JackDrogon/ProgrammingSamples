@@ -1,0 +1,3 @@
+net prof
+
+/debug/pprof
