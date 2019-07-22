@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package metadata;
+
+service GetMetadata {
+  rpc SendMetadata (MetadataRequest) returns (MetadataReply) {}
+}
+
+message MetadataRequest {
+  int32 version;
+}
+
+message MetadataReply {
+  int32 version;
+  int32 proto_version;
+  string message;
+}
