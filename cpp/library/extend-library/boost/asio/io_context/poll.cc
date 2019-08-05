@@ -11,7 +11,7 @@ int main()
 	    std::chrono::steady_clock::now();
 	for (int i = 0; i < 5; ++i) {
 		io_context.poll();
-		cout << "Now: "
+		cout << "Use: "
 		     << std::chrono::duration_cast<std::chrono::milliseconds>(
 			    std::chrono::steady_clock::now() - start)
 			    .count()
