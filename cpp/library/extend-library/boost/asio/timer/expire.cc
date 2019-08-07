@@ -15,8 +15,7 @@ int main()
 	boost::asio::steady_timer timer(io_context, 1s);
 
 	{
-		std::chrono::steady_clock::time_point start =
-		    std::chrono::steady_clock::now();
+		auto start = std::chrono::steady_clock::now();
 		function<void(const boost::system::error_code &)> wait_func;
 		wait_func = [&, start](const boost::system::error_code &) {
 			if (count++ >= 5) {

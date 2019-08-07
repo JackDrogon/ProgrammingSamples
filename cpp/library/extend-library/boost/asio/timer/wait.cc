@@ -11,8 +11,7 @@ int main()
 
 	boost::asio::steady_timer timer(io_context, 1s);
 	{
-		std::chrono::steady_clock::time_point start =
-		    std::chrono::steady_clock::now();
+		auto start = std::chrono::steady_clock::now();
 		timer.wait();
 		cout << "Use: "
 		     << std::chrono::duration_cast<std::chrono::milliseconds>(

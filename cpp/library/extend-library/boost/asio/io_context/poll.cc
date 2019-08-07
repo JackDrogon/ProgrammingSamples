@@ -7,8 +7,7 @@ int main()
 {
 	boost::asio::io_context io_context(1);
 
-	std::chrono::steady_clock::time_point start =
-	    std::chrono::steady_clock::now();
+	auto start = std::chrono::steady_clock::now();
 	for (int i = 0; i < 5; ++i) {
 		io_context.poll();
 		cout << "Use: "

@@ -12,8 +12,7 @@ int main()
 	boost::asio::steady_timer timer(io_context, 1s);
 
 	{
-		std::chrono::steady_clock::time_point start =
-		    std::chrono::steady_clock::now();
+		auto start = std::chrono::steady_clock::now();
 		timer.async_wait([=](const boost::system::error_code &) {
 			cout << "Run timer completion function, distance "
 			     << std::chrono::duration_cast<
