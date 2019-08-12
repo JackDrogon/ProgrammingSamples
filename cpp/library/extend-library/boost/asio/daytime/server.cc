@@ -5,7 +5,6 @@ using namespace std;
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/write.hpp>
-
 using boost::asio::ip::tcp;
 
 string make_daytime_string()
