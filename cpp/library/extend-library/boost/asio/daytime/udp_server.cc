@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
 	try {
 		boost::asio::io_context io_context;
 
+		cout << "Listen on :" << port << endl;
 		udp::socket socket(io_context, udp::endpoint(udp::v4(), port));
 
 		for (;;) {
