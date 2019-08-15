@@ -17,8 +17,6 @@ string make_daytime_string()
 
 class UDPDaytimeServer
 {
-private:
-
 public:
 	UDPDaytimeServer(boost::asio::io_context &io_context,
 			 const unsigned short port)

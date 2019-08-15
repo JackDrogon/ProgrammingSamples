@@ -26,8 +26,8 @@ public:
 		auto self(shared_from_this());
 		boost::asio::async_write(
 		    socket_, boost::asio::buffer(message_),
-		    [this, self](boost::system::error_code ec,
-				 std::size_t /*length*/) {
+		    [self = std::move(self)](boost::system::error_code ec,
+					     std::size_t /*length*/) {
 			    if (ec) {
 				    cout << "Error: " << ec << endl;
 			    }
@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
 		boost::asio::io_context io_context(1);
 
 		cout << "Listen on :" << port << endl;
-		DaytimeServer daytimer_server(io_context, port);
-		daytimer_server.Start();
+		DaytimeServer daytime_server(io_context, port);
+		daytime_server.Start();
 
 		io_context.run();
 
