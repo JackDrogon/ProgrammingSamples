@@ -10,3 +10,7 @@
 ## Compound Types
 - arrays like [1, 2, 3]
 - tuples like (1, true)
+
+### Tuple
+To create one element tuples, the comma is required to tell them apart from a literal surrounded by parentheses
+`(5u32,))`
