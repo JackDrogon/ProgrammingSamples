@@ -18,6 +18,11 @@ static void BM_memcpy(benchmark::State& state) {
 	delete[] src;
 	delete[] dst;
 }
-BENCHMARK(BM_memcpy)->Range(8, 32 << 10);
+
+// default multiplier is 8
+// 8 16 64 256...
+// not 8 32
+// generate by: 4^2 = 16 > 8, 4 16 64... insert 8
+BENCHMARK(BM_memcpy)->RangeMultiplier(4)->Range(8, 32 << 10);
 
 BENCHMARK_MAIN();
