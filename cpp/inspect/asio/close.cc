@@ -33,43 +33,41 @@ private:
 	{
 		auto self(shared_from_this());
 		socket_.async_read_some(
-			boost::asio::buffer(data_, kMaxLength),
-			[this, self](boost::system::error_code ec,
-				     size_t length) {
-				socket_.close();
-				if (!ec) {
-					cout << "Receive data from "
-					     << remote_endpoint_ << " => ";
-					cout.write(data_,
-						   static_cast<streamsize>(
-							   length));
-					if (length > 0 &&
-					    data_[length - 1] != '\n') {
-						cout << '\n';
-					}
-					write(length);
-					return;
-				}
-				cout << remote_endpoint_ << " leave in read"
-				     << endl;
-			});
+		    boost::asio::buffer(data_, kMaxLength),
+		    [this, self](boost::system::error_code ec, size_t length) {
+			    socket_.close();
+			    if (!ec) {
+				    cout << "Receive data from "
+					 << remote_endpoint_ << " => ";
+				    cout.write(data_,
+					       static_cast<streamsize>(length));
+				    if (length > 0 &&
+					data_[length - 1] != '\n') {
+					    cout << '\n';
+				    }
+				    write(length);
+				    return;
+			    }
+			    cout << remote_endpoint_ << " leave in read"
+				 << endl;
+		    });
 	}
 
 	void write(size_t length) noexcept
 	{
 		auto self(shared_from_this());
 		boost::asio::async_write(
-			socket_, boost::asio::buffer(data_, length),
-			[this, self](boost::system::error_code ec,
-				     size_t /* length */) {
-				socket_.close();
-				if (!ec) {
-					read();
-					return;
-				}
-				cout << remote_endpoint_ << " leave in write"
-				     << endl;
-			});
+		    socket_, boost::asio::buffer(data_, length),
+		    [this, self](boost::system::error_code ec,
+				 size_t /* length */) {
+			    socket_.close();
+			    if (!ec) {
+				    read();
+				    return;
+			    }
+			    cout << remote_endpoint_ << " leave in write"
+				 << endl;
+		    });
 	}
 
 private:
@@ -83,8 +81,7 @@ private:
 class Server final
 {
 public:
-	Server(boost::asio::io_context &io_context,
-			unsigned short port)
+	Server(boost::asio::io_context &io_context, unsigned short port)
 	    : acceptor_(io_context, tcp::endpoint(tcp::v4(), port))
 	{
 	}
@@ -95,8 +92,8 @@ public:
 		     << ") has been closed" << endl;
 	}
 
-	Server(const Server&) = delete;
-	Server& operator=(const Server&) = delete;
+	Server(const Server &) = delete;
+	Server &operator=(const Server &) = delete;
 
 	void Run() noexcept
 	{
