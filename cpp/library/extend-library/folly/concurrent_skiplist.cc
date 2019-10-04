@@ -5,7 +5,6 @@ using namespace std;
 #include <folly/ConcurrentSkipList.h>
 using namespace folly;
 
-
 int main()
 {
 	typedef ConcurrentSkipList<int> SkipListT;
