@@ -1,0 +1,4 @@
+transform 将[begin, end)通过fp转换成新的range
+replace
+
+map reduce filter
