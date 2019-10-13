@@ -9,5 +9,3 @@ static void BM_DenseRange(benchmark::State &state)
 	}
 }
 BENCHMARK(BM_DenseRange)->DenseRange(0, 1024, 128);
-
-BENCHMARK_MAIN();

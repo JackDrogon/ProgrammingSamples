@@ -42,5 +42,3 @@ static void CustomArguments(benchmark::internal::Benchmark *b)
 			b->Args({i, j});
 }
 BENCHMARK(BM_SetInsert)->Apply(CustomArguments);
-
-BENCHMARK_MAIN();

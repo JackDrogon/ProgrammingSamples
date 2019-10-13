@@ -1,2 +1,6 @@
 #!/bin/sh
-g++ basic.cc -lbenchmark -o basic
+
+filename=$1
+binfile=${filename%.*}
+
+g++ -lbenchmark -lbenchmark_main -o $binfile $filename

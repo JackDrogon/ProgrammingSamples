@@ -44,5 +44,3 @@ BENCHMARK(BM_SetInsert)
     ->Args({2 << 10, 512})
     ->Args({4 << 10, 512})
     ->Args({8 << 10, 512});
-
-BENCHMARK_MAIN();

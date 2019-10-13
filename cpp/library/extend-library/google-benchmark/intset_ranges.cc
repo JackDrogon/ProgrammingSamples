@@ -37,5 +37,3 @@ static void BM_SetInsert(benchmark::State &state)
 }
 
 BENCHMARK(BM_SetInsert)->Ranges({{1 << 10, 8 << 10}, {128, 512}});
-
-BENCHMARK_MAIN();

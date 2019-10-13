@@ -7,7 +7,8 @@
 // one of the family of benchmarks to run.  For example, the following
 // code defines a family of microbenchmarks for measuring the speed
 // of memcpy() calls of different lengths:
-static void BM_memcpy(benchmark::State& state) {
+static void BM_memcpy(benchmark::State &state)
+{
 	char *src = new char[state.range(0)];
 	char *dst = new char[state.range(0)];
 	memset(src, 'x', state.range(0));
@@ -28,5 +29,3 @@ BENCHMARK(BM_memcpy)
     ->Arg(8 << 10)
     ->Arg(16 << 10)
     ->Arg(32 << 10);
-
-BENCHMARK_MAIN();
