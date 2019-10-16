@@ -3,4 +3,4 @@
 filename=$1
 binfile=${filename%.*}
 
-g++ -lbenchmark -lbenchmark_main -o $binfile $filename
+g++ -std=c++17 -lbenchmark -lbenchmark_main -o $binfile $filename
