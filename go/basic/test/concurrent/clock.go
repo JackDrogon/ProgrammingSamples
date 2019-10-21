@@ -11,12 +11,12 @@ import (
 func handleConn(c net.Conn) {
 	defer c.Close()
 
-	for {
-		_, err := io.WriteString(c, time.Now().Format("15:04:05\n"))
-		if err != nil {
+	ticker := time.Tick(1 * time.Second)
+
+	for now := range ticker {
+		if _, err := io.WriteString(c, now.Format(time.UnixDate)+"\n"); err != nil {
 			return
 		}
-		time.Sleep(1 * time.Second)
 	}
 }
 
