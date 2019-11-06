@@ -1,16 +1,18 @@
-#include "singleton.h"
-#include <iostream>
-
-using namespace std;
+#include "singleton.hh"
 using namespace nepenthe::design_pattern;
 
-class Int {
+#include <iostream>
+using namespace std;
+
+class Int
+{
 public:
 	int value;
 	~Int() { cout << "In class Int dctor" << endl; }
 };
 
-class Double {
+class Double
+{
 public:
 	double value;
 	~Double() { cout << "In class Double dctor" << endl; }
@@ -26,7 +28,6 @@ int main()
 	cout << IntSingleton::Instance()->value << endl;
 	IntSingleton::Instance()->value = 1000;
 	cout << IntSingleton::Instance()->value << endl;
-
 
 	auto double_instance = DoubleSingleton::Instance();
 	double_instance->value = 99.9;
