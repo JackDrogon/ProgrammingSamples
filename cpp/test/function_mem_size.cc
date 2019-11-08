@@ -2,4 +2,8 @@
 #include <iostream>
 using namespace std;
 
-int main() { cout << sizeof(function<int(int)>) << endl; }
+int main()
+{
+	auto f1 = function<int(int)>();
+	cout << sizeof(f1) << endl;
+}
