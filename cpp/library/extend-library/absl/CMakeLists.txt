@@ -20,3 +20,4 @@ if(NOT abseil_POPULATED)
 endif()
 
 add_subdirectory(strings)
+add_subdirectory(synchronization)
