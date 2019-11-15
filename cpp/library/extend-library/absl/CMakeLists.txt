@@ -21,3 +21,4 @@ endif()
 
 add_subdirectory(strings)
 add_subdirectory(synchronization)
+add_subdirectory(random)
