@@ -7,12 +7,17 @@ using namespace std;
 
 #include <absl/synchronization/mutex.h>
 
-void func(absl::Mutex &mutex_, int &count)
+struct TestContext {
+	absl::Mutex mutex;
+	int count;
+};
+
+void func(absl::Mutex *mutex, int &count)
 {
 	for (int i = 0; i < 100000; ++i) {
-		mutex_.Lock();
+		mutex->Lock();
 		++count;
-		mutex_.Unlock();
+		mutex->Unlock();
 	}
 }
 
@@ -22,8 +27,9 @@ int main()
 	int count = 0;
 	vector<std::thread> threads;
 	for (int i = 0; i < 10; ++i) {
-		threads.emplace_back(func, std::ref(mutex_), std::ref(count));
+		threads.emplace_back(func, &mutex_, std::ref(count));
 	}
+
 	for (auto &thread : threads) {
 		thread.join();
 	}
