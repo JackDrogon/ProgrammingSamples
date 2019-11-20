@@ -1,0 +1,16 @@
+@startuml
+
+namespace absl {
+	class BlockingCounter {
+		- Mutex lock_;
+		- int count_; /' ABSL_GUARDED_BY(lock_) '/
+		- int num_waiting_{0}; /' ABSL_GUARDED_BY(lock_) '/
+
+		+ explicit BlockingCounter(int initial_count);
+		+ bool DecrementCount();
+		+ void Wait();
+	}
+	BlockingCounter *-- Mutex
+}
+
+@enduml
