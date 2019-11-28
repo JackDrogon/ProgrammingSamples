@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <type_traits>
 
 namespace archimedes::common
 {
@@ -15,7 +16,7 @@ public:
 	Defer &operator=(const Defer &) = delete;
 
 private:
-	Call call_;
+	std::decay_t<Call> call_;
 };
 
 } // namespace archimedes::common
