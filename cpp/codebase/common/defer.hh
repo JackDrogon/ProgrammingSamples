@@ -19,8 +19,16 @@ private:
 	std::decay_t<Call> call_;
 };
 
+struct DeferKeywordWrapper {
+	template <typename Call> auto operator<<(Call &&call)
+	{
+		return Defer(std::forward<Call>(call));
+	}
+};
+
 } // namespace archimedes::common
 
-#define DEFER(call, line, counter)                                             \
-	archimedes::common::Defer __defer_##line##_##counter(call)
-#define defer(call) DEFER(call, __LINE__, __COUNTER__)
+#define DEFER(line, counter)                                                   \
+	auto _defer_##line##_##counter =                                       \
+	    archimedes::common::DeferKeywordWrapper() <<
+#define defer DEFER(__LINE__, __COUNTER__)

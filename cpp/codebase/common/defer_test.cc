@@ -5,6 +5,6 @@ using namespace std;
 
 int main()
 {
-	defer([] { cout << "defer call" << endl; });
+	defer [] { cout << "defer call" << endl; };
 	return 0;
 }
