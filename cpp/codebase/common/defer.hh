@@ -6,6 +6,9 @@
 namespace archimedes::common
 {
 
+namespace defer_internal
+{
+
 template <typename Call> class Defer
 {
 public:
@@ -19,10 +22,12 @@ private:
 	std::decay_t<Call> call_;
 };
 
+} // namespace defer_internal
+
 struct DeferKeywordWrapper {
 	template <typename Call> auto operator<<(Call &&call)
 	{
-		return Defer(std::forward<Call>(call));
+		return defer_internal::Defer(std::forward<Call>(call));
 	}
 };
 
