@@ -28,7 +28,8 @@ struct DeferKeywordWrapper {
 
 } // namespace archimedes::common
 
+#define DEFER_CONCAT(a, b, c) a##_##b##_##c
 #define DEFER(line, counter)                                                   \
-	auto _defer_##line##_##counter =                                       \
+	auto DEFER_CONCAT(_defer, line, counter) =                             \
 	    archimedes::common::DeferKeywordWrapper() <<
 #define defer DEFER(__LINE__, __COUNTER__)
