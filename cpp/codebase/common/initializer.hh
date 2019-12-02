@@ -45,10 +45,6 @@ typename Initializer::FunctionLists Initializer::function_lists_;
 
 } // namespace initializer_internal
 
-#define INIT_CONCAT(a, b, c) a##_##b##_##c
-#define INIT_NAME()
-#define INIT() static auto INIT_NAME() =
-
 #define RUN_INIT()                                                             \
 	do {                                                                   \
 		Initializer::Init();                                           \
