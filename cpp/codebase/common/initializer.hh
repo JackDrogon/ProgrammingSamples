@@ -41,9 +41,9 @@ public:
 private:
 	static FunctionLists function_lists_;
 };
-typename Initializer::FunctionLists Initializer::function_lists_;
+inline typename Initializer::FunctionLists Initializer::function_lists_;
 
-} // namespace initializer_internal
+} // namespace archimedes::common
 
 #define RUN_INIT()                                                             \
 	do {                                                                   \
