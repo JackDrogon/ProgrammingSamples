@@ -26,6 +26,20 @@ static auto dummy = Initializer::Register(
     },
     Initializer::Priority::kHigh);
 
+bool init_f()
+{
+	cout << "low: " << __PRETTY_FUNCTION__ << endl;
+	return true;
+}
+
+init(init_f, Initializer::Priority::kLow);
+init(
+    [] {
+	    cout << "low: lambda" << endl;
+	    return true;
+    },
+    Initializer::Priority::kLow);
+
 int main()
 {
 	RUN_INIT();

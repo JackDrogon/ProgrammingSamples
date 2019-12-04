@@ -18,6 +18,7 @@ public:
 	using FunctionLists =
 	    std::array<std::list<std::pair<std::string_view, Function>>, 3>;
 
+	// TODO: Add std::function<void()> wrapper
 	static bool Register(std::string_view name, Function f,
 			     Priority priority = Priority::kNormal)
 	{
@@ -26,6 +27,7 @@ public:
 		return true;
 	}
 
+	// TODO: Use optional for return error name
 	static bool Init()
 	{
 		for (auto &function_list : function_lists_) {
@@ -44,6 +46,13 @@ private:
 inline typename Initializer::FunctionLists Initializer::function_lists_;
 
 } // namespace archimedes::common
+
+#define INIT_CONCAT(a, b, c) a##_##b##_##c
+#define INIT(line, counter, name, func, priority)                              \
+	auto INIT_CONCAT(_initializer, line, counter) =                        \
+	    archimedes::common::Initializer::Register(name, func, priority)
+// NOTE: lambda as func: use lambda string to name
+#define init(func, priority) INIT(__LINE__, __COUNTER__, #func, func, priority)
 
 #define RUN_INIT()                                                             \
 	do {                                                                   \
