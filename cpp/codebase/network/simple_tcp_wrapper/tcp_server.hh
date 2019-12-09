@@ -1,22 +1,26 @@
 #pragma once
 
 #include <string>
+
 #include <cstdint>
 #include <cstring>
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "tcp_client.hh"
 
-namespace archimedes {
+namespace archimedes
+{
 
 // TODO use hash for options
-class TCPServer {
+class TCPServer
+{
 public:
-	TCPServer(std::string address, const uint16_t port): port_(port) {
+	TCPServer(std::string address, const uint16_t port) : port_(port)
+	{
 		fd_ = socket(AF_INET, SOCK_STREAM, 0);
 		memset(&address_, 0, sizeof(address_));
 		address_.sin_family = AF_INET;
@@ -27,19 +31,21 @@ public:
 		listen();
 	}
 
-	TCPServer(const short port): TCPServer("127.0.0.1", port) {}
+	TCPServer(const short port) : TCPServer("127.0.0.1", port) {}
 
 	virtual ~TCPServer() = default;
 
-	TCPServer(const TCPServer&) = delete;
-	const TCPServer& operator=(const TCPServer&) = delete;
+	TCPServer(const TCPServer &) = delete;
+	const TCPServer &operator=(const TCPServer &) = delete;
 
-	TCPClient Accept()
+	auto Accept() -> TCPClient
 	{
 		socklen_t client_len;
 		struct sockaddr_in client_address;
 
-		if (int fd; (fd = ::accept(fd_, (struct sockaddr*)&client_address, &client_len)) > 0) {
+		if (int fd;
+		    (fd = ::accept(fd_, (struct sockaddr *)&client_address,
+				   &client_len)) > 0) {
 			return fd;
 			// return TCPClient(fd); nvo, rnvo
 		}
@@ -53,11 +59,7 @@ private:
 		::bind(fd_, (struct sockaddr *)&address_, sizeof(address_));
 	}
 
-	void listen(int backlog = 5)
-	{
-		::listen(fd_, backlog);
-	}
-
+	void listen(int backlog = 5) { ::listen(fd_, backlog); }
 
 private:
 	struct sockaddr_in address_;
