@@ -3,10 +3,15 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
-	archimedes::TCPServer tcp_server(5001);
-	cout << "Run server on 127.0.0.1:5001!" << endl;
+	unsigned short port = 5001;
+	if (argc >= 2) {
+		port = static_cast<unsigned short>(atoi(argv[1]));
+	}
+
+	archimedes::TCPServer tcp_server(port);
+	cout << "Run server on 127.0.0.1:" << port << "." << endl;
 
 	while (true) {
 		auto client = tcp_server.Accept();
