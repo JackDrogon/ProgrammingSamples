@@ -33,6 +33,16 @@ void check_opeator()
 	defer S();
 }
 
+void check_scope_exit()
+{
+	int n = 0;
+	cout << "Before scope exit: n = " << n << endl;
+	{
+		SCOPE_EXIT { ++n; };
+	}
+	cout << "After scope exit: n = " << n << endl;
+}
+
 // TODO
 // void check_class_function()
 // {
@@ -51,6 +61,8 @@ int main()
 	check_lambda();
 	check_bind();
 	check_opeator();
+
+	check_scope_exit();
 
 	return 0;
 }
