@@ -38,3 +38,7 @@ struct DeferKeywordWrapper {
 	auto DEFER_CONCAT(_defer, line, counter) =                             \
 	    archimedes::common::DeferKeywordWrapper() <<
 #define defer DEFER(__LINE__, __COUNTER__)
+
+// clang-format off
+#define SCOPE_EXIT DEFER(__LINE__, __COUNTER__) [&]
+// clang-format off
