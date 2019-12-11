@@ -12,11 +12,11 @@ namespace defer_internal
 template <typename Call> class Defer
 {
 public:
-	Defer(Call &&call) : call_(std::forward<Call>(call)) {}
-	~Defer() { call_(); }
-
 	Defer(const Defer &) = delete;
 	Defer &operator=(const Defer &) = delete;
+
+	Defer(Call &&call) : call_(std::forward<Call>(call)) {}
+	~Defer() { call_(); }
 
 private:
 	std::decay_t<Call> call_;
