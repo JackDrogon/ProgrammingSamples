@@ -32,7 +32,7 @@ BraceWrapping:
 # AllowShortFunctionsOnASingleLine: SFS_InlineOnly
 
 # Disable formatting options which may break tests.
-SortIncludes: false
+SortIncludes: true
 ReflowComments: false
 ---
 
