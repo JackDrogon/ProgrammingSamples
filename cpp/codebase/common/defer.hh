@@ -15,7 +15,8 @@ public:
 	Defer(const Defer &) = delete;
 	Defer &operator=(const Defer &) = delete;
 
-	Defer(Call &&call) : call_(std::forward<Call>(call)) {}
+	Defer(Call &call) : call_(call) {}
+	Defer(Call &&call) : call_(std::move(call)) {}
 	~Defer() { call_(); }
 
 private:
