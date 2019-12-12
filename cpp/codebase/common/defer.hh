@@ -42,4 +42,4 @@ struct DeferKeywordWrapper {
 
 // clang-format off
 #define SCOPE_EXIT DEFER(__LINE__, __COUNTER__) [&]
-// clang-format off
+// clang-format on
