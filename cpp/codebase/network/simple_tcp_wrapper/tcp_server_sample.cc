@@ -1,7 +1,7 @@
 #include <iostream>
-#include "tcp_server.hh"
-
 using namespace std;
+
+#include "tcp_server.hh"
 
 int main(int argc, char *argv[])
 {
@@ -19,6 +19,6 @@ int main(int argc, char *argv[])
 		client.Write("Hello, World!\n");
 		client.Close();
 	}
-	
+
 	return 0;
 }

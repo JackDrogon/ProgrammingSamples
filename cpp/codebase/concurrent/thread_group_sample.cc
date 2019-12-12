@@ -18,7 +18,8 @@ auto f(int b, int e) -> void
 	this_thread::sleep_for(2s);
 }
 
-int main() {
+int main()
+{
 	ThreadGroup tg;
 
 	atomic<long> lambda_cnt{0};

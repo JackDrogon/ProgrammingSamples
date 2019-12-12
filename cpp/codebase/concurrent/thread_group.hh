@@ -7,84 +7,93 @@
 
 namespace archimedes::concurrent
 {
-class ThreadGroup {
+class ThreadGroup
+{
 private:
-  ThreadGroup(ThreadGroup const &);
-  ThreadGroup &operator=(ThreadGroup const &);
+	ThreadGroup(ThreadGroup const &);
+	ThreadGroup &operator=(ThreadGroup const &);
 
 public:
-  ThreadGroup() = default;
-  ~ThreadGroup() = default;
+	ThreadGroup() = default;
+	~ThreadGroup() = default;
 
-  bool IsThreadIn(const decltype(std::thread().get_id()) &id) const;
-  bool IsThreadIn() const;
-  bool IsThreadIn(const std::thread &thread) const;
+	bool IsThreadIn(const decltype(std::thread().get_id()) &id) const;
+	bool IsThreadIn() const;
+	bool IsThreadIn(const std::thread &thread) const;
 
-  void Add(std::thread &&thread);
-  template <class Function, class... Args>
-  void Add(Function &&f, Args &&... args);
+	void Add(std::thread &&thread);
+	template <class Function, class... Args>
+	void Add(Function &&f, Args &&... args);
 
-  void JoinAll();
+	void JoinAll();
 
-  size_t Size() const;
+	size_t Size() const;
 
 private:
-  mutable std::shared_mutex mutex_;
-  std::vector<std::thread> threads_;
+	mutable std::shared_mutex mutex_;
+	std::vector<std::thread> threads_;
 };
 
-bool ThreadGroup::IsThreadIn(const decltype(std::thread().get_id()) &id) const {
-  std::shared_lock lock(mutex_);
+bool ThreadGroup::IsThreadIn(const decltype(std::thread().get_id()) &id) const
+{
+	std::shared_lock lock(mutex_);
 
-  for (auto &thread : threads_) {
-    if (id == thread.get_id()) {
-      return true;
-    }
-  }
-  return false;
+	for (auto &thread : threads_) {
+		if (id == thread.get_id()) {
+			return true;
+		}
+	}
+	return false;
 }
 
-bool ThreadGroup::IsThreadIn() const {
-  return IsThreadIn(std::this_thread::get_id());
+bool ThreadGroup::IsThreadIn() const
+{
+	return IsThreadIn(std::this_thread::get_id());
 }
 
-bool ThreadGroup::IsThreadIn(const std::thread &thread) const {
-  return IsThreadIn(thread.get_id());
+bool ThreadGroup::IsThreadIn(const std::thread &thread) const
+{
+	return IsThreadIn(thread.get_id());
 }
 
 template <class Function, class... Args>
-void ThreadGroup::Add(Function &&f, Args &&... args) {
-  std::unique_lock lock(mutex_);
+void ThreadGroup::Add(Function &&f, Args &&... args)
+{
+	std::unique_lock lock(mutex_);
 
-  threads_.emplace_back(std::forward<Function>(f), std::forward<Args>(args)...);
+	threads_.emplace_back(std::forward<Function>(f),
+			      std::forward<Args>(args)...);
 }
 
-void ThreadGroup::Add(std::thread &&thread) {
-  if (IsThreadIn(thread)) {
-    throw "ThreadGroup: trying to add a duplicated thread";
-  }
+void ThreadGroup::Add(std::thread &&thread)
+{
+	if (IsThreadIn(thread)) {
+		throw "ThreadGroup: trying to add a duplicated thread";
+	}
 
-  std::unique_lock lock(mutex_);
+	std::unique_lock lock(mutex_);
 
-  threads_.push_back(std::move(thread));
+	threads_.push_back(std::move(thread));
 }
 
-void ThreadGroup::JoinAll() {
-  if (IsThreadIn()) {
-    throw "ThreadGroup: trying joining itself";
-  }
-  std::shared_lock lock(mutex_);
+void ThreadGroup::JoinAll()
+{
+	if (IsThreadIn()) {
+		throw "ThreadGroup: trying joining itself";
+	}
+	std::shared_lock lock(mutex_);
 
-  for (auto &thread : threads_) {
-    if (thread.joinable()) {
-      thread.join();
-    }
-  }
+	for (auto &thread : threads_) {
+		if (thread.joinable()) {
+			thread.join();
+		}
+	}
 }
 
-size_t ThreadGroup::Size() const {
-  std::shared_lock lock(mutex_);
+size_t ThreadGroup::Size() const
+{
+	std::shared_lock lock(mutex_);
 
-  return threads_.size();
+	return threads_.size();
 }
-} // namespace rock
+} // namespace archimedes::concurrent
