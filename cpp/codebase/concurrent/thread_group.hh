@@ -9,17 +9,22 @@ namespace archimedes::concurrent
 {
 class ThreadGroup
 {
-private:
-	ThreadGroup(ThreadGroup const &);
-	ThreadGroup &operator=(ThreadGroup const &);
-
 public:
+	ThreadGroup(ThreadGroup const &) = delete;
+	ThreadGroup &operator=(ThreadGroup const &) = delete;
+
 	ThreadGroup() = default;
 	~ThreadGroup() = default;
 
 	bool IsThreadIn(const decltype(std::thread().get_id()) &id) const;
-	bool IsThreadIn() const;
-	bool IsThreadIn(const std::thread &thread) const;
+	auto IsThreadIn(const std::thread &thread) const
+	{
+		return IsThreadIn(thread.get_id());
+	}
+	auto IsThreadIn() const
+	{
+		return IsThreadIn(std::this_thread::get_id());
+	}
 
 	void Add(std::thread &&thread);
 	template <class Function, class... Args>
@@ -27,7 +32,7 @@ public:
 
 	void JoinAll();
 
-	size_t Size() const;
+	auto Size() const -> size_t;
 
 private:
 	mutable std::shared_mutex mutex_;
@@ -44,16 +49,6 @@ bool ThreadGroup::IsThreadIn(const decltype(std::thread().get_id()) &id) const
 		}
 	}
 	return false;
-}
-
-bool ThreadGroup::IsThreadIn() const
-{
-	return IsThreadIn(std::this_thread::get_id());
-}
-
-bool ThreadGroup::IsThreadIn(const std::thread &thread) const
-{
-	return IsThreadIn(thread.get_id());
 }
 
 template <class Function, class... Args>
@@ -90,7 +85,7 @@ void ThreadGroup::JoinAll()
 	}
 }
 
-size_t ThreadGroup::Size() const
+auto ThreadGroup::Size() const -> size_t
 {
 	std::shared_lock lock(mutex_);
 
