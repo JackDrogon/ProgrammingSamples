@@ -1,0 +1,6 @@
+chat server / client
+这是一个多播的server
+一个client写入会多播给所有连接到的chat_room上面
+chat_server 是通过不同的port来做chat_room的区分的
+
+protocol: length(4 byte) + body
