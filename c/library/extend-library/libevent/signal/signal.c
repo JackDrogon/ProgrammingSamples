@@ -2,12 +2,13 @@
 
 #include <signal.h>
 
-
 static int called = 2;
 
 static void signal_cb(evutil_socket_t fd, short event, void *arg)
 {
-	(void) fd; (void) event; (void) arg;
+	(void)fd;
+	(void)event;
+	(void)arg;
 	struct event *signal = arg;
 
 	printf("%s: got signal %d\n", __func__, event_get_signal(signal));
@@ -23,7 +24,7 @@ int main()
 	printf("Stop after receive %d times singnal!\n", called);
 
 	struct event *signal_int;
-	struct event_base* base;
+	struct event_base *base;
 
 	/* Initalize the event library */
 	base = event_base_new();

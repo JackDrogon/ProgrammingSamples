@@ -3,7 +3,8 @@
 #include <stdlib.h>
 
 static pthread_key_t pid_key; //线程存储变量，用于一个线程内部的全局变量
-static pthread_once_t once = PTHREAD_ONCE_INIT; // pthread_once的回调函数, 一般用于一次性初始化
+static pthread_once_t once =
+    PTHREAD_ONCE_INIT; // pthread_once的回调函数, 一般用于一次性初始化
 
 void once_run(void)
 {

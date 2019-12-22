@@ -128,14 +128,14 @@ int main(int argc, char **argv)
 	strcpy(data, DATA);
 
 	// Populate ipHdr
-	ipHdr->ihl = 5;     // 5 x 32-bit words in the header
+	ipHdr->ihl = 5;	    // 5 x 32-bit words in the header
 	ipHdr->version = 4; // ipv4
-	ipHdr->tos = 0;     // //tos = [0:5] DSCP + [5:7] Not used, low delay
+	ipHdr->tos = 0;	    // //tos = [0:5] DSCP + [5:7] Not used, low delay
 	ipHdr->tot_len = sizeof(struct iphdr) + sizeof(struct tcphdr) +
 			 strlen(data); // total lenght of packet. len(data) = 0
 	ipHdr->id = htons(54321);      // 0x00; //16 bit id
 	ipHdr->frag_off =
-	    0x00;	  // 16 bit field = [0:2] flags + [3:15] offset = 0x0
+	    0x00;	   // 16 bit field = [0:2] flags + [3:15] offset = 0x0
 	ipHdr->ttl = 0xFF; // 16 bit time to live (or maximal number of hops)
 	ipHdr->protocol = IPPROTO_TCP; // TCP protocol
 	ipHdr->check =
@@ -154,16 +154,16 @@ int main(int argc, char **argv)
 	tcpHdr->seq = 0x0;     // 32 bit sequence number, initially set to zero
 	tcpHdr->ack_seq = 0x0; // 32 bit ack sequence number, depends whether
 			       // ACK is set or not
-	tcpHdr->doff = 5;	    // 4 bits: 5 x 32-bit words on tcp header
-	tcpHdr->res1 = 0;	    // 4 bits: Not used
-	tcpHdr->cwr = 0;	     // Congestion control mechanism
-	tcpHdr->ece = 0;	     // Congestion control mechanism
-	tcpHdr->urg = 0;	     // Urgent flag
-	tcpHdr->ack = 0;	     // Acknownledge
-	tcpHdr->psh = 0;	     // Push data immediately
-	tcpHdr->rst = 0;	     // RST flag
-	tcpHdr->syn = 1;	     // SYN flag
-	tcpHdr->fin = 0;	     // Terminates the connection
+	tcpHdr->doff = 5;      // 4 bits: 5 x 32-bit words on tcp header
+	tcpHdr->res1 = 0;      // 4 bits: Not used
+	tcpHdr->cwr = 0;       // Congestion control mechanism
+	tcpHdr->ece = 0;       // Congestion control mechanism
+	tcpHdr->urg = 0;       // Urgent flag
+	tcpHdr->ack = 0;       // Acknownledge
+	tcpHdr->psh = 0;       // Push data immediately
+	tcpHdr->rst = 0;       // RST flag
+	tcpHdr->syn = 1;       // SYN flag
+	tcpHdr->fin = 0;       // Terminates the connection
 	tcpHdr->window = htons(155); // 0xFFFF; //16 bit max number of databytes
 	tcpHdr->check = 0; // 16 bit check sum. Can't calculate at this point
 	tcpHdr->urg_ptr =
@@ -174,8 +174,8 @@ int main(int argc, char **argv)
 					       // address
 	pTCPPacket.dstAddr = inet_addr(dstIP); // 32 bit format of source
 					       // address
-	pTCPPacket.zero = 0;		   // 8 bit always zero
-	pTCPPacket.protocol = IPPROTO_TCP; // 8 bit TCP protocol
+	pTCPPacket.zero = 0;		       // 8 bit always zero
+	pTCPPacket.protocol = IPPROTO_TCP;     // 8 bit TCP protocol
 	pTCPPacket.TCP_len = htons(sizeof(struct tcphdr) +
 				   strlen(data)); // 16 bit length of TCP header
 
@@ -183,8 +183,9 @@ int main(int argc, char **argv)
 	pseudo_packet =
 	    (char *)malloc((int)(sizeof(struct pseudoTCPPacket) +
 				 sizeof(struct tcphdr) + strlen(data)));
-	memset(pseudo_packet, 0, sizeof(struct pseudoTCPPacket) +
-				     sizeof(struct tcphdr) + strlen(data));
+	memset(pseudo_packet, 0,
+	       sizeof(struct pseudoTCPPacket) + sizeof(struct tcphdr) +
+		   strlen(data));
 
 	// Copy pseudo header
 	memcpy(pseudo_packet, (char *)&pTCPPacket,

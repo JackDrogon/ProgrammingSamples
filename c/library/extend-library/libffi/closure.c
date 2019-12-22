@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <ffi.h>
+#include <stdio.h>
 
 /* Acts like puts with the file given at time of enclosure. */
 void puts_binding(ffi_cif *cif, unsigned int *ret, void *args[], FILE *stream)
