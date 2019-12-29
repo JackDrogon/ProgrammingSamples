@@ -1,0 +1,2 @@
+-define(CONSOLE(Fmt, Args), io:format(Fmt, Args)).
+-define(CONSOLE_(Args), ?CONSOLE("~p~n", [Args])).
