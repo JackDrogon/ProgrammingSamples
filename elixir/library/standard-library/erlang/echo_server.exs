@@ -23,8 +23,15 @@ defmodule EchoServer do
 end
 
 defmodule EchoServer.Client do
+  require Logger
+
+  defstruct handle: nil, peername: ""
+
   def start(socket) do
-    serve(socket)
+    {:ok, {ip_address, port}} = :inet.peername(socket)
+    peername = "#{:inet.ntoa(ip_address)}:#{port}"
+
+    serve(%__MODULE__{handle: socket, peername: peername})
   end
 
   def serve(socket) do
@@ -36,12 +43,14 @@ defmodule EchoServer.Client do
   end
 
   defp read(socket) do
-    {:ok, data} = :gen_tcp.recv(socket, 0)
+    {:ok, data} = :gen_tcp.recv(socket.handle, 0)
+    Logger.info("#{socket.peername} recv '#{String.trim(data)}'")
+
     data
   end
 
   defp write(line, socket) do
-    :gen_tcp.send(socket, line)
+    :gen_tcp.send(socket.handle, line)
   end
 end
 
