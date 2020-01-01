@@ -1,3 +1,6 @@
+#!/usr/bin/env elixir
+# coding: utf-8
+
 defmodule EchoServer do
   require Logger
 
