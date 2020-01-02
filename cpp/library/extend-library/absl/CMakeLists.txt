@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 FetchContent_Declare(
   abseil
   GIT_REPOSITORY https://github.com/abseil/abseil-cpp
-  GIT_TAG        20190808
+  GIT_TAG        20200225.1
 )
 
 FetchContent_GetProperties(abseil)
