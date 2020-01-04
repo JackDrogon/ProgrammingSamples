@@ -18,10 +18,10 @@ defmodule EchoServer do
     accept(socket)
   end
 
-  defp accept(socket) do
-    {:ok, socket} = :gen_tcp.accept(socket)
+  defp accept(lsocket) do
+    {:ok, socket} = :gen_tcp.accept(lsocket)
     EchoServer.Client.start(socket)
-    accept(socket)
+    accept(lsocket)
   end
 end
 
