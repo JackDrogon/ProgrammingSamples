@@ -12,15 +12,15 @@ defmodule EchoServer do
     # 3. `active: false` - blocks on `:gen_tcp.recv/2` until data is available
     # 4. `reuseaddr: true` - allows us to reuse the address if the listener crashes
     #
-    {:ok, socket} =
+    {:ok, lsocket} =
       :gen_tcp.listen(port, [:binary, packet: :line, active: false, reuseaddr: true])
     Logger.info("Accepting connections on port #{port}")
-    accept(socket)
+    accept(lsocket)
   end
 
   defp accept(lsocket) do
     {:ok, socket} = :gen_tcp.accept(lsocket)
-    EchoServer.Client.start(socket)
+    spawn(EchoServer.Client, :start, [socket])
     accept(lsocket)
   end
 end
