@@ -34,26 +34,23 @@ defmodule EchoServer.Client do
     {:ok, {ip_address, port}} = :inet.peername(socket)
     peername = "#{:inet.ntoa(ip_address)}:#{port}"
 
-    serve(%__MODULE__{handle: socket, peername: peername})
-  end
-
-  def serve(socket) do
-    socket
-    |> read
-    |> write(socket)
-
-    serve(socket)
+    read(%__MODULE__{handle: socket, peername: peername})
   end
 
   defp read(socket) do
-    {:ok, data} = :gen_tcp.recv(socket.handle, 0)
-    Logger.info("#{socket.peername} recv '#{String.trim(data)}'")
-
-    data
+    case :gen_tcp.recv(socket.handle, 0) do
+      {:ok, data} ->
+        Logger.info("#{socket.peername} recv '#{String.trim(data)}'")
+        write(socket, data)
+      {:error, :closed} ->
+        Logger.info("#{socket.peername} closed")
+        :gen_tcp.close(socket.handle)
+    end
   end
 
-  defp write(line, socket) do
-    :gen_tcp.send(socket.handle, line)
+  defp write(socket, data) do
+    :gen_tcp.send(socket.handle, data)
+    read(socket)
   end
 end
 
