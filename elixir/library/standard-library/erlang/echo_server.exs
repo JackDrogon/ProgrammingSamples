@@ -42,8 +42,8 @@ defmodule EchoServer.Client do
       {:ok, data} ->
         Logger.info("#{socket.peername} recv '#{String.trim(data)}'")
         write(socket, data)
-      {:error, :closed} ->
-        Logger.info("#{socket.peername} closed")
+      {:error, reason} ->
+        Logger.info("#{socket.peername} error, reason: #{reason}")
         :gen_tcp.close(socket.handle)
     end
   end
