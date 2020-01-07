@@ -167,13 +167,17 @@ template <typename Service>
 template <typename Request, typename Response, int MethodIndex>
 class GrpcAsyncService<Service>::CallData final : public Callable {
 public:
-	using CallbackType = std::function<void(
-	    grpc::ServerContext *, Request *, Response *,
-	    grpc::ServerAsyncResponseWriter<Response> *, void *)>;
+	template <class W>
+	using ServerAsyncResponseWriter =
+	    ::grpc_impl::ServerAsyncResponseWriter<W>;
+
+	using CallbackType =
+	    std::function<void(grpc::ServerContext *, Request *, Response *,
+			       ServerAsyncResponseWriter<Response> *, void *)>;
 	using ServiceRegisterType = std::function<void(
 	    typename Service::AsyncService *, grpc::ServerContext *, Request *,
-	    grpc::ServerAsyncResponseWriter<Response> *,
-	    grpc::CompletionQueue *, grpc::ServerCompletionQueue *, void *)>;
+	    ServerAsyncResponseWriter<Response> *, grpc::CompletionQueue *,
+	    grpc::ServerCompletionQueue *, void *)>;
 
 public:
 	// Take in the "service" instance (in this case representing an
@@ -256,7 +260,7 @@ private:
 	grpc::ServerContext ctx_;
 
 	// The means to get back to the client.
-	grpc::ServerAsyncResponseWriter<Response> responder_;
+	ServerAsyncResponseWriter<Response> responder_;
 
 	// What we get from the client.
 	Request request_;
