@@ -11,6 +11,10 @@ int main()
 	std::ofstream("sandbox/file1.txt");
 	std::ofstream("sandbox/file2.txt");
 
+	// NOTE: 这里不会类似python walk一样，递归遍历
+	// "sandbox/file2.txt"
+	// "sandbox/file1.txt"
+	// "sandbox/a"
 	for (auto &path : fs::directory_iterator("sandbox")) {
 		std::cout << path.path() << endl;
 	}
