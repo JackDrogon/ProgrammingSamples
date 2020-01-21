@@ -2,7 +2,10 @@
 #include <type_traits> // contain endian
 using namespace std;
 
-void PrintNativeEndian()
+namespace
+{
+
+inline auto _print_native_endian()
 {
 	switch (endian::native) {
 	case endian::big:
@@ -12,12 +15,15 @@ void PrintNativeEndian()
 		cout << "Native byte order is LittleEndian." << endl;
 		break;
 	default:
-		cout << "Unkown Native Byte Order" << endl;
+		cout << "Unkown Native Byte Order." << endl;
 	}
 }
 
+} // namespace
+
 int main()
 {
-	PrintNativeEndian();
+	_print_native_endian();
+
 	return 0;
 }
