@@ -3,3 +3,6 @@ target_link_libraries(mutex absl::synchronization)
 
 add_executable(blocking_counter blocking_counter.cc)
 target_link_libraries(blocking_counter absl::synchronization)
+
+add_executable(barrier barrier.cc)
+target_link_libraries(barrier absl::synchronization)
