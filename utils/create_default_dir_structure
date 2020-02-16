@@ -11,4 +11,5 @@ DIR="codebase  inspect  library  pattern  performance  practice  syntax  test  t
 
 for dir in ${DIR}; do
 	echo "${PROJECT}/${dir}"
+	mkdir -p "${PROJECT}/${dir}"
 done
