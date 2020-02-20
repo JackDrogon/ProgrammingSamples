@@ -4,7 +4,7 @@
 
 def main():
     for animal in ["dog", "cat", "mouse"]:
-        print("{} is a mammal".format(animal))
+        print(f"{animal} is a mammal")
 
 
 if __name__ == "__main__":
