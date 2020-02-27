@@ -35,7 +35,7 @@ unique_ptr<Stooge> Stooge::make_stooge(int choice)
 	if (choice == 1) {
 		return make_unique<Larry>();
 	} else if (choice == 2) {
-		return make_unique<Larry>();
+		return make_unique<Moe>();
 	} else {
 		return make_unique<Curly>();
 	}
@@ -53,7 +53,7 @@ int main()
 		}
 		roles.push_back(Stooge::make_stooge(choice));
 	}
-	for (int i = 0; i < roles.size(); i++) {
+	for (size_t i = 0; i < roles.size(); i++) {
 		roles[i]->slap_stick();
 	}
 
