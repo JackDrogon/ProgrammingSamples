@@ -1,19 +1,19 @@
 #include <future>
 #include <thread>
-#include <chrono>
 #include <random>
 #include <iostream>
-#include <exception>
 using namespace std;
 
-int run(char c)
+namespace
+{
+static int run(char c)
 {
 	// random-number generator (use c as seed to get different sequences)
-	std::default_random_engine dre(c);
-	std::uniform_int_distribution<int> id(10, 1000);
+	default_random_engine dre(static_cast<unsigned int>(c));
+	uniform_int_distribution<int> id(2, 30);
 
 	// loop to print character after a random period of time
-	for (int i = 0; i < 10; ++i) {
+	for (size_t i = 0; i < 10; ++i) {
 		this_thread::sleep_for(chrono::milliseconds(id(dre)));
 		cout.put(c).flush();
 	}
@@ -24,15 +24,16 @@ int run(char c)
 int f1() { return run('.'); }
 
 int f2() { return run('+'); }
+} // namespace
 
 int main()
 {
-	std::cout << "starting f1() '.' in background"
-		  << " and f2() '+' in foreground:" << std::endl;
+	cout << "starting f1() '.' in background"
+	     << " and f2() '+' in foreground:" << endl;
 
 	// start f1() asynchronously (now or later or never):
-	// std::future<int>
-	auto result1 = std::async(f1);
+	// future<int>
+	auto result1 = async(f1);
 
 	int result2 = f2(); // call f2() synchronously (here and now)
 
@@ -40,5 +41,5 @@ int main()
 	// result2
 	int result = result1.get() + result2;
 
-	std::cout << "\nresult of f1() + f2(): " << result << std::endl;
+	cout << "\nresult of f1() + f2(): " << result << endl;
 }
