@@ -4,6 +4,8 @@ using namespace std;
 class Base1
 {
 public:
+	virtual ~Base1() = default;
+
 	virtual void f() { cout << "Base1::f" << endl; }
 	virtual void g() { cout << "Base1::g" << endl; }
 	virtual void h() { cout << "Base1::h" << endl; }
@@ -12,6 +14,8 @@ public:
 class Base2
 {
 public:
+	virtual ~Base2() = default;
+
 	virtual void f() { cout << "Base2::f" << endl; }
 	virtual void g() { cout << "Base2::g" << endl; }
 	virtual void h() { cout << "Base2::h" << endl; }
@@ -20,6 +24,8 @@ public:
 class Base3
 {
 public:
+	virtual ~Base3() = default;
+
 	virtual void f() { cout << "Base3::f" << endl; }
 	virtual void g() { cout << "Base3::g" << endl; }
 	virtual void h() { cout << "Base3::h" << endl; }
@@ -28,7 +34,7 @@ public:
 class Derive : public Base1, public Base2, public Base3
 {
 public:
-	virtual void f() { cout << "Derive::f" << endl; }
+	void f() final { cout << "Derive::f" << endl; }
 	virtual void g1() { cout << "Derive::g1" << endl; }
 };
 
@@ -36,7 +42,7 @@ typedef void (*Fun)(void);
 
 int main()
 {
-	Fun pFun = NULL;
+	Fun pFun = nullptr;
 
 	Derive d;
 	long **pVtab = (long **)&d;
