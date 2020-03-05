@@ -1,6 +1,8 @@
 #include <iostream>
 using namespace std;
 
+namespace
+{
 class Base1
 {
 public:
@@ -38,7 +40,8 @@ public:
 	virtual void g1() { cout << "Derive::g1" << endl; }
 };
 
-typedef void (*Fun)(void);
+using Fun = void (*)(void);
+} // namespace
 
 int main()
 {
