@@ -1,8 +1,7 @@
 #include <iostream>
 
-#include "Poco/MD5Engine.h"
 #include "Poco/DigestStream.h"
-
+#include "Poco/MD5Engine.h"
 
 int main(int argc, char **argv)
 {
