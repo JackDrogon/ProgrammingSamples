@@ -14,8 +14,6 @@ func Say(name string, gender SpecialString, age int) {
 
 func main() {
 	inj := inject.New()
-	inj.Map("陈一回")
-	inj.MapTo("男", (*SpecialString)(nil))
-	inj.Map(20)
+	inj.Map("陈一回").MapTo("男", (*SpecialString)(nil)).Map(20)
 	inj.Invoke(Say)
 }
