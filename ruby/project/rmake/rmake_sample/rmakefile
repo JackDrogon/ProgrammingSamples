@@ -6,4 +6,4 @@ total : 1.o 2.c 2.h 1.h
 	gcc hello.c -o hello
 
 clean :
-	rm -f *.o total
+	rm -f *.o total hello

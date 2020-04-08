@@ -77,7 +77,13 @@ def target_deps(target, deps_map)
   # pp "---", deps
   return deps
 end
-build_targets = target_deps(first_target, deps)
+
+target = first_target
+unless ARGV.empty?
+  target = ARGV[0]
+end
+
+build_targets = target_deps(target, deps)
 pp build_targets
 
 # check target renew
