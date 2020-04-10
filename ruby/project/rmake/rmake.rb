@@ -14,17 +14,43 @@ class RMake
     @current_target = nil
   end
 
-  def target_deps(target, deps_map)
+  def _need_rebuild?(target, deps)
+    if !File.exists?(target)
+      return true
+    end
+
+    deps.each do |dep|
+      unless File.exists?(dep)
+        return true
+      end
+
+      if File.mtime(target) < File.mtime(dep)
+        return true
+      end
+    end
+
+    return false
+  end
+
+  def target_deps(target)
     # contain self at last
-    deps = [target]
-    target_deps = deps_map[target]
-    # pp target_deps
-    unless target_deps
+    # pp "find target:#{target} dep"
+    deps = []
+    target_deps = @deps[target]
+    if target_deps == nil
+      return deps
+    elsif target_deps.empty?
+      deps << target
       return deps
     end
 
     target_deps.each do |target_dep|
-      deps = target_deps(target_dep, deps_map) + deps
+      deps = target_deps(target_dep) + deps
+    end
+    if !deps.empty?
+      deps << target
+    elsif _need_rebuild?(target, target_deps)
+      deps << target
     end
     # pp "---", deps
     return deps
@@ -71,6 +97,7 @@ class RMake
         # clean: => ["clean"]
         if line.strip.end_with?(":")
           @current_target = rule[0]
+          @deps[@current_target] ||= []
           next
         end
 
@@ -85,7 +112,7 @@ class RMake
         @first_target ||= target
         @current_target = target
         # TODO: merge dep use array merge
-        all_dep.each{|dep| (@deps[target] ||= []) << dep}
+        all_dep.each{|dep| (@deps[@current_target] ||= []) << dep}
         # ["total", "1.o 2.c 2.h 1.h"]
       end
     end
@@ -107,15 +134,10 @@ class RMake
 
     # TODO: PHONY target
 
-    # def need_rebuild?(target, deps)
-    #   unless File.exists self
-    #     return true
-    #   end
-    # end
 
     # Check target must need rule
     # Check need build
-    build_targets = target_deps(@target, @deps)
+    build_targets = target_deps(@target)
     pp build_targets
     build build_targets
   end
