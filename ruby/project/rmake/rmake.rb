@@ -1,12 +1,15 @@
 #!/usr/bin/env ruby
 # -*- coding:utf-8 -*-
 
+RMAKEFILE="rmakefile"
+
 class RMake
-  def initialize(rmakefile)
+  def initialize(rmakefile, target)
     @rmakefile = rmakefile
     @rules = {}
     @deps = {}
 
+    @target = target
     @first_target = nil
     @current_target = nil
   end
@@ -25,6 +28,34 @@ class RMake
     end
     # pp "---", deps
     return deps
+  end
+
+  def build(build_targets)
+    # TODO check target renew
+    built_targets = {}
+    loop do
+      if build_targets.empty?
+        break
+      end
+
+      target = build_targets.shift
+      pp target
+      if built_targets[target]
+        pp "target:#{target} has been built"
+        next
+      end
+
+      pp "building #{target}"
+      built_targets[target] = true
+      rule = @rules[target]
+      unless rule
+        next
+      end
+      rule.each do
+        |r| pp "----> #{r}"
+        `#{r}`
+      end
+    end
   end
 
   def run
@@ -62,8 +93,12 @@ class RMake
     pp @deps
     pp @rules
 
+    unless @target
+      @target = @first_target
+    end
+
     # build
-    unless @first_target
+    unless @target
       puts "not found target"
       exit(1)
     end
@@ -80,43 +115,17 @@ class RMake
 
     # Check target must need rule
     # Check need build
-
-    target = @first_target
-    unless ARGV.empty?
-      target = ARGV[0]
-    end
-
-    build_targets = target_deps(target, @deps)
+    build_targets = target_deps(@target, @deps)
     pp build_targets
-
-    # check target renew
-    built_targets = {}
-    loop do
-      if build_targets.empty?
-        break
-      end
-
-      target = build_targets.shift
-      pp target
-      if built_targets[target]
-        pp "target:#{target} has been built"
-        next
-      end
-
-      pp "building #{target}"
-      built_targets[target] = true
-      rule = @rules[target]
-      unless rule
-        next
-      end
-      rule.each do
-        |r| pp "----> #{r}"
-        `#{r}`
-      end
-    end
+    build build_targets
   end
 end
 
-RMAKEFILE="rmakefile"
-rmake = RMake.new(RMAKEFILE)
+
+target = nil
+unless ARGV.empty?
+  target = ARGV[0]
+end
+
+rmake = RMake.new(RMAKEFILE, target)
 rmake.run
