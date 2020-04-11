@@ -14,24 +14,6 @@ class RMake
     @current_target = nil
   end
 
-  def _need_rebuild?(target, deps)
-    if !File.exists?(target)
-      return true
-    end
-
-    deps.each do |dep|
-      unless File.exists?(dep)
-        return true
-      end
-
-      if File.mtime(target) < File.mtime(dep)
-        return true
-      end
-    end
-
-    return false
-  end
-
   def target_deps(target)
     # contain self at last
     # pp "find target:#{target} dep"
@@ -84,7 +66,7 @@ class RMake
     end
   end
 
-  def run
+  def build_deps
     lines = File.readlines(@rmakefile)
     lines.each do |line|
       rule = line.strip.split(":").map(&:strip)
@@ -119,13 +101,13 @@ class RMake
     pp @first_target
     pp @deps
     pp @rules
+  end
 
-    unless @target
-      @target = @first_target
-    end
+  def run
+    build_deps
 
-    # build
-    unless @target
+    target = _get_target()
+    unless target
       puts "not found target"
       exit(1)
     end
@@ -136,11 +118,38 @@ class RMake
 
 
     # Check target must need rule
-    # Check need build
-    build_targets = target_deps(@target)
+    build_targets = target_deps(target)
     pp build_targets
     build build_targets
   end
+
+private
+  def _need_rebuild?(target, deps)
+    if !File.exists?(target)
+      return true
+    end
+
+    deps.each do |dep|
+      unless File.exists?(dep)
+        return true
+      end
+
+      if File.mtime(target) < File.mtime(dep)
+        return true
+      end
+    end
+
+    return false
+  end
+
+  def _get_target()
+    if @target
+      return @target
+    end
+
+    return @first_target
+  end
+
 end
 
 
