@@ -3,6 +3,20 @@
 
 RMAKEFILE="rmakefile"
 
+class Task
+  def initialize(target, rules)
+    @target = target
+    @rules = rules
+  end
+
+  def build
+    @rules.each do |rule|
+      pp "----> #{rule}"
+      `#{rule}`
+    end
+  end
+end
+
 class RMake
   def initialize(rmakefile, target)
     @rmakefile = rmakefile
@@ -39,7 +53,6 @@ class RMake
   end
 
   def build(build_targets)
-    # TODO check target renew
     built_targets = {}
     loop do
       if build_targets.empty?
@@ -55,14 +68,9 @@ class RMake
 
       pp "building #{target}"
       built_targets[target] = true
-      rule = @rules[target]
-      unless rule
-        next
-      end
-      rule.each do
-        |r| pp "----> #{r}"
-        `#{r}`
-      end
+      rules = @rules[target]
+      task = Task.new(target, rules)
+      task.build
     end
   end
 
