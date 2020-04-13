@@ -97,13 +97,12 @@ class RMake
         end
         (@rules[@current_target] ||= []) << rule[0]
       when 2
+        # ["total", "1.o 2.c 2.h 1.h"]
         target = rule[0]
         all_dep = rule[1].split.map(&:strip)
         @first_target ||= target
         @current_target = target
-        # TODO: merge dep use array merge
-        all_dep.each{|dep| (@deps[@current_target] ||= []) << dep}
-        # ["total", "1.o 2.c 2.h 1.h"]
+        (@deps[@current_target] ||= []).concat(all_dep)
       end
     end
     pp @first_target
