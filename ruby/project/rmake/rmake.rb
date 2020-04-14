@@ -6,7 +6,7 @@ RMAKEFILE="rmakefile"
 class Task
   def initialize(target, rules)
     @target = target
-    @rules = rules
+    @rules = rules ? rules : []
   end
 
   def build
@@ -29,7 +29,6 @@ class RMake
   end
 
   def target_deps(target)
-    # contain self at last
     # pp "find target:#{target} dep"
     deps = []
     target_deps = @deps[target]
@@ -120,9 +119,6 @@ class RMake
     end
 
     puts "-------------------------"
-
-    # TODO: PHONY target
-
 
     # Check target must need rule
     build_targets = target_deps(target)
