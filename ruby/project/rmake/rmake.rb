@@ -4,6 +4,8 @@
 RMAKEFILE="rmakefile"
 
 class Task
+  attr_reader :target
+
   def initialize(target, rules)
     @target = target
     @rules = rules ? rules : []
@@ -51,14 +53,15 @@ class RMake
     return deps
   end
 
-  def build(build_targets)
+  def build(build_tasks)
     built_targets = {}
     loop do
-      if build_targets.empty?
+      if build_tasks.empty?
         break
       end
 
-      target = build_targets.shift
+      task = build_tasks.shift
+      target = task.target
       pp target
       if built_targets[target]
         pp "target:#{target} has been built"
@@ -67,8 +70,6 @@ class RMake
 
       pp "building #{target}"
       built_targets[target] = true
-      rules = @rules[target]
-      task = Task.new(target, rules)
       task.build
     end
   end
@@ -123,7 +124,7 @@ class RMake
     # Check target must need rule
     build_targets = target_deps(target)
     pp build_targets
-    build build_targets
+    build build_targets.map{|target| Task.new(target, @rules[target])}
   end
 
 private
