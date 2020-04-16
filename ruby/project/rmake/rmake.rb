@@ -53,7 +53,12 @@ class RMake
     return deps
   end
 
-  def build(build_tasks)
+  def build(target)
+    # Check target must need rule
+    build_targets = target_deps(target)
+    pp build_targets
+    build_tasks = build_targets.map{|target_arg| Task.new(target_arg, @rules[target_arg])}
+
     built_targets = {}
     loop do
       if build_tasks.empty?
@@ -61,15 +66,15 @@ class RMake
       end
 
       task = build_tasks.shift
-      target = task.target
+      running_target = task.target
       pp target
-      if built_targets[target]
-        pp "target:#{target} has been built"
+      if built_targets[running_target]
+        pp "target:#{running_target} has been built"
         next
       end
 
-      pp "building #{target}"
-      built_targets[target] = true
+      pp "building #{running_target}"
+      built_targets[running_target] = true
       task.build
     end
   end
@@ -120,11 +125,7 @@ class RMake
     end
 
     puts "-------------------------"
-
-    # Check target must need rule
-    build_targets = target_deps(target)
-    pp build_targets
-    build build_targets.map{|target| Task.new(target, @rules[target])}
+    build target
   end
 
 private
