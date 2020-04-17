@@ -28,34 +28,13 @@ class RMake
     @target = target
     @first_target = nil
     @current_target = nil
-  end
 
-  def target_deps(target)
-    # pp "find target:#{target} dep"
-    deps = []
-    target_deps = @deps[target]
-    if target_deps == nil
-      return deps
-    elsif target_deps.empty?
-      deps << target
-      return deps
-    end
-
-    target_deps.each do |target_dep|
-      deps = target_deps(target_dep) + deps
-    end
-    if !deps.empty?
-      deps << target
-    elsif _need_rebuild?(target, target_deps)
-      deps << target
-    end
-    # pp "---", deps
-    return deps
+    _parse
   end
 
   def build(target)
     # Check target must need rule
-    build_targets = target_deps(target)
+    build_targets = _target_deps(target)
     pp build_targets
     build_tasks = build_targets.map{|target_arg| Task.new(target_arg, @rules[target_arg])}
 
@@ -79,13 +58,52 @@ class RMake
     end
   end
 
-  def build_deps
+  def run
+    target = _get_target()
+    unless target
+      puts "not found target"
+      exit(1)
+    end
+
+    puts "-------------------------"
+    build target
+  end
+
+
+private
+  def _need_rebuild?(target, deps)
+    if !File.exists?(target)
+      return true
+    end
+
+    deps.each do |dep|
+      unless File.exists?(dep)
+        return true
+      end
+
+      if File.mtime(target) < File.mtime(dep)
+        return true
+      end
+    end
+
+    return false
+  end
+
+  def _get_target()
+    if @target
+      return @target
+    end
+
+    return @first_target
+  end
+
+  def _parse
     lines = File.readlines(@rmakefile)
     lines.each do |line|
       rule = line.strip.split(":").map(&:strip)
       case rule.length
       when 0
-        # []
+        # [], empty line
         # break
       when 1
         # ["gcc 1.o 2.c -o total"]
@@ -115,44 +133,27 @@ class RMake
     pp @rules
   end
 
-  def run
-    build_deps
-
-    target = _get_target()
-    unless target
-      puts "not found target"
-      exit(1)
+  def _target_deps(target)
+    # pp "find target:#{target} dep"
+    deps = []
+    target_deps = @deps[target]
+    if target_deps == nil
+      return deps
+    elsif target_deps.empty?
+      deps << target
+      return deps
     end
 
-    puts "-------------------------"
-    build target
-  end
-
-private
-  def _need_rebuild?(target, deps)
-    if !File.exists?(target)
-      return true
+    target_deps.each do |target_dep|
+      deps = _target_deps(target_dep) + deps
     end
-
-    deps.each do |dep|
-      unless File.exists?(dep)
-        return true
-      end
-
-      if File.mtime(target) < File.mtime(dep)
-        return true
-      end
+    if !deps.empty?
+      deps << target
+    elsif _need_rebuild?(target, target_deps)
+      deps << target
     end
-
-    return false
-  end
-
-  def _get_target()
-    if @target
-      return @target
-    end
-
-    return @first_target
+    # pp "---", deps
+    return deps
   end
 
 end
