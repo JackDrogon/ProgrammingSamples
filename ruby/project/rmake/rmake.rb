@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
-# -*- coding:utf-8 -*-
+# frozen_string_literal: true
 
-RMAKEFILE="rmakefile"
+RMAKEFILE = 'rmakefile'
 
 class Task
   attr_reader :target
 
   def initialize(target, rules)
     @target = target
-    @rules = rules ? rules : []
+    @rules = rules || []
   end
 
   def build
@@ -36,13 +36,11 @@ class RMake
     # Check target must need rule
     build_targets = _target_deps(target)
     pp build_targets
-    build_tasks = build_targets.map{|target_arg| Task.new(target_arg, @rules[target_arg])}
+    build_tasks = build_targets.map { |target_arg| Task.new(target_arg, @rules[target_arg]) }
 
     built_targets = {}
     loop do
-      if build_tasks.empty?
-        break
-      end
+      break if build_tasks.empty?
 
       task = build_tasks.shift
       running_target = task.target
@@ -59,48 +57,40 @@ class RMake
   end
 
   def run
-    target = _get_target()
+    target = _get_target
     unless target
-      puts "not found target"
+      puts 'not found target'
       exit(1)
     end
 
-    puts "-------------------------"
+    puts '-------------------------'
     build target
   end
 
+  private
 
-private
   def _need_rebuild?(target, deps)
-    if !File.exists?(target)
-      return true
-    end
+    return true unless File.exist?(target)
 
     deps.each do |dep|
-      unless File.exists?(dep)
-        return true
-      end
+      return true unless File.exist?(dep)
 
-      if File.mtime(target) < File.mtime(dep)
-        return true
-      end
+      return true if File.mtime(target) < File.mtime(dep)
     end
 
-    return false
+    false
   end
 
-  def _get_target()
-    if @target
-      return @target
-    end
+  def _get_target
+    return @target if @target
 
-    return @first_target
+    @first_target
   end
 
   def _parse
     lines = File.readlines(@rmakefile)
     lines.each do |line|
-      rule = line.strip.split(":").map(&:strip)
+      rule = line.strip.split(':').map(&:strip)
       case rule.length
       when 0
         # [], empty line
@@ -108,14 +98,14 @@ private
       when 1
         # ["gcc 1.o 2.c -o total"]
         # clean: => ["clean"]
-        if line.strip.end_with?(":")
+        if line.strip.end_with?(':')
           @current_target = rule[0]
           @deps[@current_target] ||= []
           next
         end
 
         unless @current_target
-          puts "found rule before target"
+          puts 'found rule before target'
           exit(1)
         end
         (@rules[@current_target] ||= []) << rule[0]
@@ -137,7 +127,7 @@ private
     # pp "find target:#{target} dep"
     deps = []
     target_deps = @deps[target]
-    if target_deps == nil
+    if target_deps.nil?
       return deps
     elsif target_deps.empty?
       deps << target
@@ -153,16 +143,12 @@ private
       deps << target
     end
     # pp "---", deps
-    return deps
+    deps
   end
-
 end
-
 
 target = nil
-unless ARGV.empty?
-  target = ARGV[0]
-end
+target = ARGV[0] unless ARGV.empty?
 
 rmake = RMake.new(RMAKEFILE, target)
 rmake.run
