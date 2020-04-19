@@ -56,6 +56,10 @@ class RMake
     end
   end
 
+  def list_targets
+    @deps.keys
+  end
+
   def run
     target = _get_target
     unless target
@@ -151,4 +155,8 @@ target = nil
 target = ARGV[0] unless ARGV.empty?
 
 rmake = RMake.new(RMAKEFILE, target)
+pp '================================='
+pp '----- list targets -----'
+pp rmake.list_targets
+pp '================================='
 rmake.run
