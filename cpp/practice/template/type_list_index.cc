@@ -9,13 +9,12 @@ template <std::size_t I, typename Head, typename... Tail>
 struct type_list_index_1 {
 	using type = typename type_list_index_1<I - 1, Tail...>::type;
 };
-
 template <typename Head, typename... Tail>
 struct type_list_index_1<0, Head, Tail...> {
 	using type = Head;
 };
 
-template <std::size_t I, class T> struct type_list_index; /* undefined */
+template <std::size_t I, class T> struct type_list_index; // undefined
 template <std::size_t I, typename... Ts>
 struct type_list_index<I, type_list<Ts...>> {
 	static_assert(I < sizeof...(Ts), "index out of range");
