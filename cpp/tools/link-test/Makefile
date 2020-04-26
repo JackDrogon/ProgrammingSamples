@@ -16,12 +16,19 @@ hello: main.o libhello.a
 test: main.o test.o libhello.a
 	$(CXX) $^ -o $@
 
+test-reverse: main.o libhello.a test.o
+	# gcc failed, clang success
+	$(CXX) $^ -o $@
+
 test-link: main.o test.o
 	$(CXX) $^ -L. -lhello -o $@
+
+test-link-reverse: main.o test.o
+	$(CXX) main.o -L. -lhello test.o -o $@
 
 test-fail: main.o test.o hello.o
 	$(CXX) $^ -o $@
 
 .PHONY: clean
 clean:
-	-$(RM) *.o *.a hello a.out test test-link
+	-$(RM) *.o *.a hello a.out test test-*
