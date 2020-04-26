@@ -1,4 +1,4 @@
-# Link Test
+# Link Order Test
 
 ## Test duplicate symbol link
 1. if all symbol in .o, link failed
