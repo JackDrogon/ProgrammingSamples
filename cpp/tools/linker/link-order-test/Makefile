@@ -5,7 +5,11 @@ else
 	AR := ar rcsD # D remove ar time
 endif
 
-.DEFAULT_GOAL = hello
+.DEFAULT_GOAL = run
+
+.PHONY: run
+run:
+	./run.sh
 
 libhello.a: hello.o
 	$(AR) $@ $^
