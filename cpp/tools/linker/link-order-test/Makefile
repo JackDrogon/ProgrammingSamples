@@ -14,6 +14,9 @@ run:
 libhello.a: hello.o
 	$(AR) $@ $^
 
+libtest.a: test.o
+	$(AR) $@ $^
+
 hello: main.o libhello.a
 	$(CXX) $^ -o $@
 
@@ -29,6 +32,12 @@ test-link: main.o test.o
 
 test-link-reverse: main.o test.o
 	$(CXX) main.o -L. -lhello test.o -o $@
+
+test-link2lib: main.o libhello.a libtest.a
+	$(CXX) $^ -o $@
+
+test-link2lib-reverse: main.o libtest.a libhello.a
+	$(CXX) $^ -o $@
 
 test-fail: main.o test.o hello.o
 	$(CXX) $^ -o $@
