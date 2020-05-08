@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# ============ Const Variables ============
+if [ -h "$0" ]; then
+	BASEDIR=$(dirname $(readlink "$0"))
+else
+	BASEDIR=$(dirname "$0")
+fi
+
+ROOT_DIR=$(realpath "$BASEDIR/..")
+PROJECT_TEMPLATES_DIR="${ROOT_DIR}/project_templates"
+# ============ Const Variables ============
+
+# Add command helper
+# new
+# NOTE: new $prj
+prj_template_name="$2"
+prj_name="$3"
+
+mkdir -p "${prj_name}"
+rsync -a "${PROJECT_TEMPLATES_DIR}/${prj_template_name}/" "${prj_name}"
