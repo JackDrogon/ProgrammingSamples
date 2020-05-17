@@ -124,19 +124,21 @@ define linkonce_odr i32 @Derived::get()(%struct.Derived* %0) unnamed_addr #2 ali
   ret i32 %7
 }
 ; Function Attrs: noinline nounwind optnone ssp uwtable
+; @_ZN4BaseD1Ev D1 # complete object destructor
 define linkonce_odr void @Base::~Base()(%struct.Base* %0) unnamed_addr #2 align 2 {
   %2 = alloca %struct.Base*, align 8
   store %struct.Base* %0, %struct.Base** %2, align 8
   %3 = load %struct.Base*, %struct.Base** %2, align 8
-  call void @Base::~Base()(%struct.Base* %3) #4
+  call void @Base::~Base()(%struct.Base* %3) #4; call _ZN4BaseD2Ev
   ret void
 }
 ; Function Attrs: noinline nounwind optnone ssp uwtable
+; _ZN4BaseD0Ev D0 # deleting destructor
 define linkonce_odr void @Base::~Base()(%struct.Base* %0) unnamed_addr #2 align 2 {
   %2 = alloca %struct.Base*, align 8
   store %struct.Base* %0, %struct.Base** %2, align 8
   %3 = load %struct.Base*, %struct.Base** %2, align 8
-  call void @Base::~Base()(%struct.Base* %3) #4
+  call void @Base::~Base()(%struct.Base* %3) #4 ; call _ZN4BaseD1Ev
   %4 = bitcast %struct.Base* %3 to i8*
   call void @operator delete(void*)(i8* %4) #5
   ret void
@@ -151,6 +153,7 @@ define linkonce_odr i32 @Base::get()(%struct.Base* %0) unnamed_addr #2 align 2 {
   ret i32 %5
 }
 ; Function Attrs: noinline nounwind optnone ssp uwtable
+; _ZN4BaseD2Ev D2 # base object destructor
 define linkonce_odr void @Base::~Base()(%struct.Base* %0) unnamed_addr #2 align 2 {
   %2 = alloca %struct.Base*, align 8
   store %struct.Base* %0, %struct.Base** %2, align 8
