@@ -1,3 +1,11 @@
+struct RawBase {
+	RawBase(int n_arg) : n(n_arg) {}
+	~RawBase() = default;
+
+	int get() { return n; }
+	int n;
+};
+
 struct Base {
 	Base(int n_arg) : n(n_arg) {}
 	virtual ~Base() = default;
@@ -11,12 +19,11 @@ struct Derived : Base {
 	virtual int get() { return n + 10; }
 };
 
-int get(Base *b) { return b->get(); }
-
 int main()
 {
+	RawBase r(10);
+	Base b(10);
 	Derived d(10);
-	get(static_cast<Base *>(&d));
 
 	return 0;
 }
