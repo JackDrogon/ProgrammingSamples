@@ -4,10 +4,11 @@
 RMAKEFILE = 'rmakefile'
 
 class Task
-  attr_reader :target
+  attr_reader :target, :deps
 
-  def initialize(target, rules)
+  def initialize(target, deps, rules)
     @target = target
+    @deps = deps
     @rules = rules || []
   end
 
@@ -27,7 +28,6 @@ class RMake
 
     @target = target
     @first_target = nil
-    @current_target = nil
 
     _parse
   end
@@ -36,7 +36,7 @@ class RMake
     # Check target must need rule
     build_targets = _target_deps(target)
     pp build_targets
-    build_tasks = build_targets.map { |target_arg| Task.new(target_arg, @rules[target_arg]) }
+    build_tasks = build_targets.map { |target_arg| Task.new(target_arg, @deps[target_arg], @rules[target_arg]) }
 
     built_targets = {}
     loop do
@@ -92,6 +92,8 @@ class RMake
   end
 
   def _parse
+    current_target = nil
+
     lines = File.readlines(@rmakefile)
     lines.each do |line|
       rule = line.strip.split(':').map(&:strip)
@@ -103,23 +105,23 @@ class RMake
         # ["gcc 1.o 2.c -o total"]
         # clean: => ["clean"]
         if line.strip.end_with?(':')
-          @current_target = rule[0]
-          @deps[@current_target] ||= []
+          current_target = rule[0]
+          @deps[current_target] ||= []
           next
         end
 
-        unless @current_target
+        unless current_target
           puts 'found rule before target'
           exit(1)
         end
-        (@rules[@current_target] ||= []) << rule[0]
+        (@rules[current_target] ||= []) << rule[0]
       when 2
         # ["total", "1.o 2.c 2.h 1.h"]
         target = rule[0]
         all_dep = rule[1].split.map(&:strip)
         @first_target ||= target
-        @current_target = target
-        (@deps[@current_target] ||= []).concat(all_dep)
+        current_target = target
+        (@deps[current_target] ||= []).concat(all_dep)
       end
     end
     pp @first_target
