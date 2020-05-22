@@ -35,7 +35,6 @@ class RMake
   def build(target)
     # Check target must need rule
     build_targets = _target_deps(target)
-    pp build_targets
     build_tasks = build_targets.map { |target_arg| Task.new(target_arg, @deps[target_arg], @rules[target_arg]) }
 
     built_targets = {}
@@ -44,7 +43,6 @@ class RMake
 
       task = build_tasks.shift
       running_target = task.target
-      pp target
       if built_targets[running_target]
         pp "target:#{running_target} has been built"
         next
@@ -130,7 +128,6 @@ class RMake
   end
 
   def _target_deps(target)
-    # pp "find target:#{target} dep"
     deps = []
     target_deps = @deps[target]
     if target_deps.nil?
@@ -148,7 +145,6 @@ class RMake
     elsif _need_rebuild?(target, target_deps)
       deps << target
     end
-    # pp "---", deps
     deps
   end
 end
