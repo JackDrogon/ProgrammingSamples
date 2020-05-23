@@ -3,6 +3,25 @@
 
 RMAKEFILE = 'rmakefile'
 
+class Env
+  def initialize(child)
+    @child = child
+    @table = {}
+  end
+
+  def [](key)
+    return @table[key] || @child[key]
+  end
+
+  def []= (key, value)
+    if @table[key]
+      @table[key] = value
+    end
+
+    child[key] = value
+  end
+end
+
 class Task
   attr_reader :target, :deps
 
@@ -21,7 +40,8 @@ class Task
 end
 
 class RMake
-  def initialize(rmakefile, target)
+  def initialize(env, rmakefile, target)
+    @env = env
     @rmakefile = rmakefile
     @rules = {}
     @deps = {}
@@ -152,7 +172,7 @@ end
 target = nil
 target = ARGV[0] unless ARGV.empty?
 
-rmake = RMake.new(RMAKEFILE, target)
+rmake = RMake.new(Env.new(ENV.to_hash), RMAKEFILE, target)
 pp '================================='
 pp '----- list targets -----'
 pp rmake.list_targets
