@@ -3,6 +3,14 @@
 
 RMAKEFILE = 'rmakefile'
 
+module EnvHelper
+  def verbose
+    if @env["VERBOSE"]
+      yield if block_given?
+    end
+  end
+end
+
 class Env
   def initialize(child)
     @child = child
@@ -33,13 +41,15 @@ class Task
 
   def build
     @rules.each do |rule|
-      pp "----> #{rule}"
+      puts "  --> #{rule}"
       `#{rule}`
     end
   end
 end
 
 class RMake
+  include EnvHelper
+
   def initialize(env, rmakefile, target)
     @env = env
     @rmakefile = rmakefile
@@ -64,11 +74,11 @@ class RMake
       task = build_tasks.shift
       running_target = task.target
       if built_targets[running_target]
-        pp "target:#{running_target} has been built"
+        verbose {pp "target:#{running_target} has been built"}
         next
       end
 
-      pp "building #{running_target}"
+      puts "building #{running_target}"
       built_targets[running_target] = true
       task.build
     end
@@ -85,7 +95,7 @@ class RMake
       exit(1)
     end
 
-    puts '-------------------------'
+    verbose {puts '-------------------------'}
     build target
   end
 
@@ -142,9 +152,9 @@ class RMake
         (@deps[current_target] ||= []).concat(all_dep)
       end
     end
-    pp @first_target
-    pp @deps
-    pp @rules
+    verbose {pp @first_target}
+    verbose {pp @deps}
+    verbose {pp @rules}
   end
 
   def _target_deps(target)
@@ -173,8 +183,8 @@ target = nil
 target = ARGV[0] unless ARGV.empty?
 
 rmake = RMake.new(Env.new(ENV.to_hash), RMAKEFILE, target)
-pp '================================='
-pp '----- list targets -----'
-pp rmake.list_targets
-pp '================================='
+puts '================================='
+puts '----- list targets -----'
+puts rmake.list_targets
+puts '================================='
 rmake.run
