@@ -179,12 +179,18 @@ class RMake
   end
 end
 
-target = nil
-target = ARGV[0] unless ARGV.empty?
+def main
+  target = nil
+  target = ARGV[0] unless ARGV.empty?
 
-rmake = RMake.new(Env.new(ENV.to_hash), RMAKEFILE, target)
-puts '================================='
-puts '----- list targets -----'
-puts rmake.list_targets
-puts '================================='
-rmake.run
+  rmake = RMake.new(Env.new(ENV.to_hash), RMAKEFILE, target)
+  puts '================================='
+  puts '----- list targets -----'
+  puts rmake.list_targets
+  puts '================================='
+  rmake.run
+end
+
+if $_ != __FILE__
+  main
+end
