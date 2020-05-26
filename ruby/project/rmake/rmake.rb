@@ -5,7 +5,7 @@ RMAKEFILE = 'rmakefile'
 
 module EnvHelper
   def verbose
-    if @env["VERBOSE"]
+    if @env['VERBOSE']
       yield if block_given?
     end
   end
@@ -18,15 +18,15 @@ class Env
   end
 
   def [](key)
-    return @table[key] || @child[key]
+    @table[key] || @child[key]
   end
 
-  def []= (key, value)
+  def []=(key, value)
     if @table[key]
       @table[key] = value
+    else
+      @child[key] = value
     end
-
-    child[key] = value
   end
 end
 
@@ -74,7 +74,7 @@ class RMake
       task = build_tasks.shift
       running_target = task.target
       if built_targets[running_target]
-        verbose {pp "target:#{running_target} has been built"}
+        verbose { pp "target:#{running_target} has been built" }
         next
       end
 
@@ -95,7 +95,7 @@ class RMake
       exit(1)
     end
 
-    verbose {puts '-------------------------'}
+    verbose { puts '-------------------------'}
     build target
   end
 
@@ -191,6 +191,4 @@ def main
   rmake.run
 end
 
-if $_ != __FILE__
-  main
-end
+main if $LAST_READ_LINE != __FILE__
