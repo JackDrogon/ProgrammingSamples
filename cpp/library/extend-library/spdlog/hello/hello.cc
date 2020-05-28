@@ -1,8 +1,9 @@
 #include <iostream>
 #include <memory>
 
+#include "spdlog/fmt/ostr.h"
+
 #include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h" //stdout_color_mt
 namespace spd = spdlog;
 
 int main(int, char *[])
