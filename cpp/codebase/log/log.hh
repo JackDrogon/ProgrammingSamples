@@ -11,6 +11,8 @@ namespace archimedes::log
 
 inline std::shared_ptr<spdlog::logger> g_logger = spdlog::default_logger();
 
+} // namespace archimedes::log
+
 #define TRACE(...) SPDLOG_LOGGER_TRACE(archimedes::log::g_logger, __VA_ARGS__)
 #define DEBUG(...) SPDLOG_LOGGER_DEBUG(archimedes::log::g_logger, __VA_ARGS__)
 #define INFO(...) SPDLOG_LOGGER_INFO(archimedes::log::g_logger, __VA_ARGS__)
@@ -18,5 +20,10 @@ inline std::shared_ptr<spdlog::logger> g_logger = spdlog::default_logger();
 #define ERROR(...) SPDLOG_LOGGER_ERROR(archimedes::log::g_logger, __VA_ARGS__)
 #define CRITICAL(...)                                                          \
 	SPDLOG_LOGGER_CRITICAL(archimedes::log::g_logger, __VA_ARGS__)
-
-} // namespace archimedes::log
+#define FATAL(...)                                                             \
+	do {                                                                   \
+		CRITICAL(__VA_ARGS__);                                         \
+		spdlog::apply_all(                                             \
+		    [&](std::shared_ptr<spdlog::logger> l) { l->flush(); });   \
+		abort();                                                       \
+	} while (0)
