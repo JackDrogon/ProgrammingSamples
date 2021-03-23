@@ -94,20 +94,19 @@ end
 class RMake
   include EnvHelper
 
-  def initialize(env, rmakefile, target)
+  def initialize(env, rmakefile, target_name)
     @env = env
     @rmakefile = rmakefile
 
-    @first_target = nil
-    @target = target
+    @target_name = target_name
     @target_map = {}
     @targets = []
 
     _parse
   end
 
-  def build(target_name)
-    target = @target_map[target_name]
+  def build
+    target = @target_map[@target_name]
     target.build
   end
 
@@ -117,14 +116,13 @@ class RMake
 
   def run
     # TODO check target not found
-    target = _get_target
-    unless target
-      puts 'not found target'
+    unless @target_name
+      puts "target #{@target_name} not found"
       exit(1)
     end
 
     verbose { puts '-------------------------' }
-    build target
+    build
   end
 
   private
@@ -137,6 +135,7 @@ class RMake
 
   def _parse
     current_target = nil
+    first_target = nil
     deps = {}
     tasks = {}
 
@@ -165,16 +164,17 @@ class RMake
         # ["total", "1.o 2.c 2.h 1.h"]
         target_name = rule[0]
         target_deps = rule[1].split.map(&:strip)
-        @first_target ||= target_name
+        first_target ||= target_name
         current_target = target_name
         (deps[current_target] ||= []).concat(target_deps)
       end
     end
 
+    @target_name ||= first_target
     @targets = deps.map { |name, deps| Target.new(@env, name, deps, tasks[name], @target_map)}
     @targets.each { |t| @target_map[t.name] = t}
 
-    verbose { pp @first_target }
+    verbose { pp @target_name }
     verbose { pp deps }
     verbose { pp tasks }
     verbose { pp @targets }
@@ -182,10 +182,10 @@ class RMake
 end
 
 def main
-  target = nil
-  target = ARGV[0] unless ARGV.empty?
+  target_name = nil
+  target_name = ARGV[0] unless ARGV.empty?
 
-  rmake = RMake.new(Env.new(ENV.to_hash), RMAKEFILE, target)
+  rmake = RMake.new(Env.new(ENV.to_hash), RMAKEFILE, target_name)
   puts '================================='
   puts '----- list targets -----'
   puts rmake.list_targets
