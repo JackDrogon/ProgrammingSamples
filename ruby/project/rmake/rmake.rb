@@ -97,13 +97,11 @@ class RMake
   def initialize(env, rmakefile, target)
     @env = env
     @rmakefile = rmakefile
-    @tasks = {}
-    @deps = {}
 
     @first_target = nil
     @target = target
-    @targets = []
     @target_map = {}
+    @targets = []
 
     _parse
   end
@@ -114,7 +112,7 @@ class RMake
   end
 
   def list_targets
-    @deps.keys
+    @target_map.keys
   end
 
   def run
@@ -139,6 +137,8 @@ class RMake
 
   def _parse
     current_target = nil
+    deps = {}
+    tasks = {}
 
     lines = File.readlines(@rmakefile)
     lines.each do |line|
@@ -152,7 +152,7 @@ class RMake
         # clean: => ["clean"]
         if line.strip.end_with?(':')
           current_target = rule[0]
-          @deps[current_target] ||= []
+          deps[current_target] ||= []
           next
         end
 
@@ -160,23 +160,23 @@ class RMake
           puts 'found rule before target'
           exit(1)
         end
-        (@tasks[current_target] ||= []) << rule[0]
+        (tasks[current_target] ||= []) << rule[0]
       when 2
         # ["total", "1.o 2.c 2.h 1.h"]
         target_name = rule[0]
-        deps = rule[1].split.map(&:strip)
+        target_deps = rule[1].split.map(&:strip)
         @first_target ||= target_name
         current_target = target_name
-        (@deps[current_target] ||= []).concat(deps)
+        (deps[current_target] ||= []).concat(target_deps)
       end
     end
 
-    @targets = @deps.map { |name, deps| Target.new(@env, name, deps, @tasks[name], @target_map)}
+    @targets = deps.map { |name, deps| Target.new(@env, name, deps, tasks[name], @target_map)}
     @targets.each { |t| @target_map[t.name] = t}
 
     verbose { pp @first_target }
-    verbose { pp @deps }
-    verbose { pp @tasks }
+    verbose { pp deps }
+    verbose { pp tasks }
     verbose { pp @targets }
   end
 end
