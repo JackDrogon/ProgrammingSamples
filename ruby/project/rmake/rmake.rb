@@ -61,7 +61,7 @@ class RMake
   def initialize(env, rmakefile, target)
     @env = env
     @rmakefile = rmakefile
-    @rules = {}
+    @tasks = {}
     @targets = {}
 
     @target = target
@@ -73,7 +73,7 @@ class RMake
   def build(target)
     # Check target must need rule
     build_targets = _target_deps(target)
-    build_tasks = build_targets.map { |target_arg| Target.new(target_arg, @targets[target_arg], @rules[target_arg]) }
+    build_tasks = build_targets.map { |target_arg| Target.new(target_arg, @targets[target_arg], @tasks[target_arg]) }
 
     built_targets = {}
     loop do
@@ -150,19 +150,19 @@ class RMake
           puts 'found rule before target'
           exit(1)
         end
-        (@rules[current_target] ||= []) << rule[0]
+        (@tasks[current_target] ||= []) << rule[0]
       when 2
         # ["total", "1.o 2.c 2.h 1.h"]
-        target = rule[0]
-        all_dep = rule[1].split.map(&:strip)
-        @first_target ||= target
-        current_target = target
-        (@targets[current_target] ||= []).concat(all_dep)
+        target_name = rule[0]
+        deps = rule[1].split.map(&:strip)
+        @first_target ||= target_name
+        current_target = target_name
+        (@targets[current_target] ||= []).concat(deps)
       end
     end
     verbose { pp @first_target }
     verbose { pp @targets }
-    verbose { pp @rules }
+    verbose { pp @tasks }
   end
 
   def _target_deps(target)
