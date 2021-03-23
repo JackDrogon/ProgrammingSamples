@@ -44,14 +44,50 @@ end
 class Target
   attr_reader :name, :deps
 
-  def initialize(name, deps, cmds)
+  def initialize(env, name, deps, cmds, target_map)
+    @env = env
     @name = name
     @deps = deps
     @tasks = (cmds || []).map { |cmd| Task.new(cmd) }
+    @target_map = target_map
+    @need_rebuild = nil
+  end
+
+  def rebuild?
+    @need_rebuild = _rebuild? if @need_rebuild.nil?
+    @need_rebuild
   end
 
   def build
+    return unless rebuild?
+
+    @deps.each do |dep|
+      target = @target_map[dep]
+      target.build unless target.nil?
+    end
     @tasks.each(&:build)
+    @need_rebuild = false
+  end
+
+  private
+
+  def _rebuild?
+    return true unless File.exist?(@name)
+
+    @deps.any? do |dep|
+      # PHONY task
+      return true unless File.exist?(dep)
+
+      target = @target_map[dep]
+      if target.nil?
+        # File task
+        File.mtime(@name) < File.mtime(dep)
+      elsif target.rebuild?
+        true
+      else
+        File.mtime(@name) < File.mtime(target.name)
+      end
+    end
   end
 end
 
@@ -64,34 +100,17 @@ class RMake
     @tasks = {}
     @deps = {}
 
-    @target = target
     @first_target = nil
-
+    @target = target
     @targets = []
+    @target_map = {}
 
     _parse
   end
 
-  def build(target)
-    # Check target must need rule
-    build_targets = _target_deps(target)
-    build_tasks = build_targets.map { |target_arg| Target.new(target_arg, @deps[target_arg], @tasks[target_arg]) }
-
-    built_targets = {}
-    loop do
-      break if build_tasks.empty?
-
-      task = build_tasks.shift
-      running_target_name = task.name
-      if built_targets[running_target_name]
-        verbose { pp "target:#{running_target_name} has been built" }
-        next
-      end
-
-      puts "building #{running_target_name}"
-      built_targets[running_target_name] = true
-      task.build
-    end
+  def build(target_name)
+    target = @target_map[target_name]
+    target.build
   end
 
   def list_targets
@@ -99,6 +118,7 @@ class RMake
   end
 
   def run
+    # TODO check target not found
     target = _get_target
     unless target
       puts 'not found target'
@@ -110,18 +130,6 @@ class RMake
   end
 
   private
-
-  def _need_rebuild?(target, deps)
-    return true unless File.exist?(target)
-
-    deps.each do |dep|
-      return true unless File.exist?(dep)
-
-      return true if File.mtime(target) < File.mtime(dep)
-    end
-
-    false
-  end
 
   def _get_target
     return @target if @target
@@ -163,34 +171,13 @@ class RMake
       end
     end
 
-    @targets = @deps.map{|name, deps| Target.new(name, deps, @tasks[name])}
+    @targets = @deps.map { |name, deps| Target.new(@env, name, deps, @tasks[name], @target_map)}
+    @targets.each { |t| @target_map[t.name] = t}
 
     verbose { pp @first_target }
     verbose { pp @deps }
     verbose { pp @tasks }
     verbose { pp @targets }
-  end
-
-  def _target_deps(target)
-    deps = []
-    target_deps = @deps[target]
-
-    return deps if target_deps.nil?
-
-    if target_deps.empty?
-      deps << target
-      return deps
-    end
-
-    target_deps.each do |target_dep|
-      deps = _target_deps(target_dep) + deps
-    end
-    if !deps.empty?
-      deps << target
-    elsif _need_rebuild?(target, target_deps)
-      deps << target
-    end
-    deps
   end
 end
 
