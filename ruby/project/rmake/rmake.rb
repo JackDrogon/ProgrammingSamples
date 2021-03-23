@@ -30,20 +30,28 @@ class Env
   end
 end
 
-class Target
-  attr_reader :target, :deps
-
-  def initialize(target, deps, rules)
-    @target = target
-    @deps = deps
-    @rules = rules || []
+class Task
+  def initialize(cmd)
+    @cmd = cmd
   end
 
   def build
-    @rules.each do |rule|
-      puts "  --> #{rule}"
-      `#{rule}`
-    end
+    puts "  --> #{@cmd}"
+    `#{@cmd}`
+  end
+end
+
+class Target
+  attr_reader :name, :deps
+
+  def initialize(name, deps, cmds)
+    @name = name
+    @deps = deps
+    @tasks = (cmds || []).map { |cmd| Task.new(cmd) }
+  end
+
+  def build
+    @tasks.each(&:build)
   end
 end
 
@@ -72,14 +80,14 @@ class RMake
       break if build_tasks.empty?
 
       task = build_tasks.shift
-      running_target = task.target
-      if built_targets[running_target]
-        verbose { pp "target:#{running_target} has been built" }
+      running_target_name = task.name
+      if built_targets[running_target_name]
+        verbose { pp "target:#{running_target_name} has been built" }
         next
       end
 
-      puts "building #{running_target}"
-      built_targets[running_target] = true
+      puts "building #{running_target_name}"
+      built_targets[running_target_name] = true
       task.build
     end
   end
