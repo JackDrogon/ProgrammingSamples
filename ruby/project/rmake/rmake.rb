@@ -30,7 +30,7 @@ class Env
   end
 end
 
-class Task
+class Target
   attr_reader :target, :deps
 
   def initialize(target, deps, rules)
@@ -54,7 +54,7 @@ class RMake
     @env = env
     @rmakefile = rmakefile
     @rules = {}
-    @deps = {}
+    @targets = {}
 
     @target = target
     @first_target = nil
@@ -65,7 +65,7 @@ class RMake
   def build(target)
     # Check target must need rule
     build_targets = _target_deps(target)
-    build_tasks = build_targets.map { |target_arg| Task.new(target_arg, @deps[target_arg], @rules[target_arg]) }
+    build_tasks = build_targets.map { |target_arg| Target.new(target_arg, @targets[target_arg], @rules[target_arg]) }
 
     built_targets = {}
     loop do
@@ -85,7 +85,7 @@ class RMake
   end
 
   def list_targets
-    @deps.keys
+    @targets.keys
   end
 
   def run
@@ -134,7 +134,7 @@ class RMake
         # clean: => ["clean"]
         if line.strip.end_with?(':')
           current_target = rule[0]
-          @deps[current_target] ||= []
+          @targets[current_target] ||= []
           next
         end
 
@@ -149,17 +149,17 @@ class RMake
         all_dep = rule[1].split.map(&:strip)
         @first_target ||= target
         current_target = target
-        (@deps[current_target] ||= []).concat(all_dep)
+        (@targets[current_target] ||= []).concat(all_dep)
       end
     end
     verbose {pp @first_target}
-    verbose {pp @deps}
+    verbose {pp @targets}
     verbose {pp @rules}
   end
 
   def _target_deps(target)
     deps = []
-    target_deps = @deps[target]
+    target_deps = @targets[target]
     if target_deps.nil?
       return deps
     elsif target_deps.empty?
