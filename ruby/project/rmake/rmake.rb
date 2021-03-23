@@ -103,7 +103,7 @@ class RMake
       exit(1)
     end
 
-    verbose { puts '-------------------------'}
+    verbose { puts '-------------------------' }
     build target
   end
 
@@ -160,17 +160,18 @@ class RMake
         (@targets[current_target] ||= []).concat(all_dep)
       end
     end
-    verbose {pp @first_target}
-    verbose {pp @targets}
-    verbose {pp @rules}
+    verbose { pp @first_target }
+    verbose { pp @targets }
+    verbose { pp @rules }
   end
 
   def _target_deps(target)
     deps = []
     target_deps = @targets[target]
-    if target_deps.nil?
-      return deps
-    elsif target_deps.empty?
+
+    return deps if target_deps.nil?
+
+    if target_deps.empty?
       deps << target
       return deps
     end
