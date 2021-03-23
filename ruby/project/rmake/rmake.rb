@@ -63,7 +63,7 @@ class Target
 
     @deps.each do |dep|
       target = @target_map[dep]
-      target.build unless target.nil?
+      target&.build
     end
     @tasks.each(&:build)
     @need_rebuild = false
@@ -115,7 +115,7 @@ class RMake
   end
 
   def run
-    # TODO check target not found
+    # TODO: check target not found
     unless @target_name
       puts "target #{@target_name} not found"
       exit(1)
@@ -136,7 +136,7 @@ class RMake
   def _parse
     current_target = nil
     first_target = nil
-    deps = {}
+    all_deps = {}
     tasks = {}
 
     lines = File.readlines(@rmakefile)
@@ -151,7 +151,7 @@ class RMake
         # clean: => ["clean"]
         if line.strip.end_with?(':')
           current_target = rule[0]
-          deps[current_target] ||= []
+          all_deps[current_target] ||= []
           next
         end
 
@@ -166,16 +166,16 @@ class RMake
         target_deps = rule[1].split.map(&:strip)
         first_target ||= target_name
         current_target = target_name
-        (deps[current_target] ||= []).concat(target_deps)
+        (all_deps[current_target] ||= []).concat(target_deps)
       end
     end
 
     @target_name ||= first_target
-    @targets = deps.map { |name, deps| Target.new(@env, name, deps, tasks[name], @target_map)}
-    @targets.each { |t| @target_map[t.name] = t}
+    @targets = all_deps.map { |name, deps| Target.new(@env, name, deps, tasks[name], @target_map) }
+    @targets.each { |t| @target_map[t.name] = t }
 
     verbose { pp @target_name }
-    verbose { pp deps }
+    verbose { pp all_deps }
     verbose { pp tasks }
     verbose { pp @targets }
   end
