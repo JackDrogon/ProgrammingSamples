@@ -7,3 +7,6 @@ total : 1.o 2.c 2.h 1.h
 
 clean :
 	rm -f *.o total hello
+
+echo :
+	@echo hello

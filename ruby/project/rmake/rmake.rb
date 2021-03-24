@@ -31,13 +31,32 @@ class Env
 end
 
 class Task
-  def initialize(cmd)
+  def initialize(env, cmd)
+    @env = env
     @cmd = cmd
+    @verbose = nil
   end
 
   def build
-    puts "  --> #{@cmd}"
-    `#{@cmd}`
+    verbose {puts "  --> #{@cmd}"}
+    output = `#{@cmd}`
+    print output
+  end
+
+private
+  def verbose
+    if @verbose.nil?
+      # nil run first
+      @verbose = true
+      if @cmd.start_with?("@")
+        @verbose = false
+        @cmd[0] = ''
+      end
+    end
+
+    if @verbose
+      yield if block_given?
+    end
   end
 end
 
@@ -48,7 +67,7 @@ class Target
     @env = env
     @name = name
     @deps = deps
-    @tasks = (cmds || []).map { |cmd| Task.new(cmd) }
+    @tasks = (cmds || []).map { |cmd| Task.new(env, cmd) }
     @target_map = target_map
     @need_rebuild = nil
   end
