@@ -17,6 +17,9 @@ class Token(object):
     def __repr__(self) -> str:
         return f'type: {self.type.name}, raw: "{self.raw}"'
 
+    def __eq__(self, other) -> bool:
+        return self.type == other.type and self.raw == other.raw
+
 
 if __name__ == '__main__':
     cases = [(Token.Type.EOF, ""), (Token.Type.LBRACK, "["),
