@@ -11,14 +11,10 @@ set(CMAKE_CXX_STANDARD 17)
 FetchContent_Declare(
   abseil
   GIT_REPOSITORY https://github.com/abseil/abseil-cpp
-  GIT_TAG        20200225.1
+  GIT_TAG        20210324.2
 )
 
-FetchContent_GetProperties(abseil)
-if(NOT abseil_POPULATED)
-  FetchContent_Populate(abseil)
-  add_subdirectory(${abseil_SOURCE_DIR} ${abseil_BINARY_DIR})
-endif()
+FetchContent_MakeAvailable(abseil)
 
 # ===========================================================
 add_subdirectory(strings)
