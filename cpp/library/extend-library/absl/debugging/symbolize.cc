@@ -23,7 +23,8 @@ int main(int argc, char **argv)
 	// Initialize the Symbolizer
 	absl::InitializeSymbolizer(argv[0]);
 
-	// TODO: dump func(int) not '(unknown)'
+	// 0x10f139ed0  (anonymous namespace)::func()
+	// TODO(Drogon): print with return type/ args
 	DumpPCAndSymbol((void *)(&func));
 
 	return 0;
