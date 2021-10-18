@@ -17,10 +17,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(abseil)
 
 # ===========================================================
+add_subdirectory(container)
+add_subdirectory(debugging)
+add_subdirectory(random)
 add_subdirectory(strings)
 add_subdirectory(synchronization)
-add_subdirectory(random)
-add_subdirectory(types)
-add_subdirectory(container)
 add_subdirectory(time)
-add_subdirectory(debugging)
+add_subdirectory(types)
+add_subdirectory(flags)
