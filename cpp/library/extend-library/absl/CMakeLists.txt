@@ -17,6 +17,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(abseil)
 
 # ===========================================================
+add_subdirectory(algorithm)
 add_subdirectory(container)
 add_subdirectory(debugging)
 add_subdirectory(random)
