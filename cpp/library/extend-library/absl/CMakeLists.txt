@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.11)
 
-project(abseil_samples)
+project(abseil_samples
+  VERSION
+    1.0
+  DESCRIPTION
+    "Abseil samples project"
+  LANGUAGES
+    CXX
+)
 
 include(FetchContent)
 
