@@ -19,4 +19,4 @@ if(NOT pprint_POPULATED)
   target_include_directories(pprint INTERFACE ${pprint_SOURCE_DIR}/include)
 endif()
 
-add_subdirectory(hello)
+add_subdirectory(samples)
