@@ -9,19 +9,22 @@ project(abseil_samples
     CXX
 )
 
-include(FetchContent)
-
-set(CMAKE_CXX_STANDARD 17)
+# Basic Config
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1) # Write compile_commands.json
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "-fno-omit-frame-pointer")
 
 # ===========================================================
 # Process Abseil's CMake build system
-FetchContent_Declare(
-  abseil
-  GIT_REPOSITORY https://github.com/abseil/abseil-cpp
-  GIT_TAG        20210324.2
-)
+# Ccache
+include (cmake/ccache.cmake)
 
-FetchContent_MakeAvailable(abseil)
+# add dependencies
+include(cmake/CPM.cmake)
+CPMAddPackage("gh:abseil/abseil-cpp#20220623.0")
+if(abseil_ADDED)
+	 set_property(DIRECTORY ${abseil_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
+endif()
 
 # ===========================================================
 add_subdirectory(algorithm)
