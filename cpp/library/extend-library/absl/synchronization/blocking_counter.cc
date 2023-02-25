@@ -14,12 +14,12 @@ int main()
 {
 	absl::BlockingCounter wg(kCounter);
 	vector<thread> threads;
-	vector<bool> done(kCounter, false);
+	vector<int> done(kCounter, 0);
 	threads.reserve(kCounter);
 
 	for (size_t i = 0; i < kCounter; ++i) {
 		threads.emplace_back([&wg, done = &done[i]] {
-			*done = true;
+			*done = 1;
 			wg.DecrementCount();
 		});
 	}
