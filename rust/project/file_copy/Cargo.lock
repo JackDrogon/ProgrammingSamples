@@ -50,6 +50,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "file_copy"
+version = "0.1.0"
+dependencies = [
+ "clap",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -85,13 +92,6 @@ name = "os_str_bytes"
 version = "6.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ceedf44fb00f2d1984b0bc98102627ce622e083e49a5bacdb3e514fa4238e267"
-
-[[package]]
-name = "rust_file_copy"
-version = "0.1.0"
-dependencies = [
- "clap",
-]
 
 [[package]]
 name = "strsim"
