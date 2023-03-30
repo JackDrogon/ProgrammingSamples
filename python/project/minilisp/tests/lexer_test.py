@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # encoding: utf-8
 
-from ast import Str
-from tokenize import String
 import unittest
 from io import StringIO
 
@@ -22,7 +20,7 @@ class StringIOWithName(StringIO):
 class LexerTest(unittest.TestCase):
     EOF_TOKEN = Token(Token.Type.EOF, "")
 
-    def __check_token(self, str: Str, token: Token) -> None:
+    def __check_token(self, str: str, token: Token) -> None:
         file = StringIOWithName(str)
         lexer = Lexer(file)
 
@@ -30,7 +28,7 @@ class LexerTest(unittest.TestCase):
             self.assertEqual(lexer.next(), token)
         self.assertEqual(lexer.next(), self.EOF_TOKEN)
 
-    def __check_first_token(self, str: Str, token: Token) -> None:
+    def __check_first_token(self, str: str, token: Token) -> None:
         file = StringIOWithName(str)
         lexer = Lexer(file)
 
