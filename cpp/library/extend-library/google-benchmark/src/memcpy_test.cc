@@ -1,4 +1,4 @@
-#include <cstdlib>
+#include <cstring>
 
 #include <benchmark/benchmark.h>
 
