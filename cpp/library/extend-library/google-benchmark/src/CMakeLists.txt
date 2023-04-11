@@ -1,2 +1,6 @@
-add_executable(memcpy_test memcpy_test.cc)
-target_link_libraries(memcpy_test benchmark::benchmark_main)
+function(add_ut exe_name)
+  add_executable(${exe_name} ${exe_name}.cc)
+  target_link_libraries(${exe_name} benchmark::benchmark_main)
+endfunction()
+
+add_ut(memcpy_test)
