@@ -4,3 +4,4 @@ function(add_ut exe_name)
 endfunction()
 
 add_ut(memcpy_test)
+add_ut(map_test)
