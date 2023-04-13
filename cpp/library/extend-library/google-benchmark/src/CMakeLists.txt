@@ -3,5 +3,6 @@ function(add_ut exe_name)
   target_link_libraries(${exe_name} benchmark::benchmark_main)
 endfunction()
 
+add_ut(basic_test)
 add_ut(memcpy_test)
 add_ut(map_test)
