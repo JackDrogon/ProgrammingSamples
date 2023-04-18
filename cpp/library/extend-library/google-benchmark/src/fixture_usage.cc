@@ -1,25 +1,28 @@
 #include <cassert>
+
 #include <memory>
-using namespace std;
 
 #include "benchmark/benchmark.h"
 
+using namespace std;
 
 class MyFixture : public ::benchmark::Fixture
 {
 public:
 	void SetUp(const ::benchmark::State &state)
 	{
-		if (state.thread_index == 0) {
+		if (state.thread_index() == 0) {
 			assert(data.get() == nullptr);
-			data.reset(new int(42));
+
+			data = std::make_unique<int>(42);
 		}
 	}
 
 	void TearDown(const ::benchmark::State &state)
 	{
-		if (state.thread_index == 0) {
+		if (state.thread_index() == 0) {
 			assert(data.get() != nullptr);
+
 			data.reset();
 		}
 	}
@@ -29,25 +32,27 @@ public:
 	std::unique_ptr<int> data;
 };
 
-BENCHMARK_F(MyFixture, Foo)(benchmark::State &st)
+BENCHMARK_F(MyFixture, Foo)(benchmark::State &state)
 {
 	assert(data.get() != nullptr);
 	assert(*data == 42);
-	for (auto _ : st) {
+
+	for (auto _ : state) {
 	}
 }
 
-BENCHMARK_DEFINE_F(MyFixture, Bar)(benchmark::State &st)
+BENCHMARK_DEFINE_F(MyFixture, Bar)(benchmark::State &state)
 {
-	if (st.thread_index == 0) {
+	if (state.thread_index() == 0) {
 		assert(data.get() != nullptr);
 		assert(*data == 42);
 	}
-	for (auto _ : st) {
+
+	for (auto _ : state) {
 		assert(data.get() != nullptr);
 		assert(*data == 42);
 	}
-	st.SetItemsProcessed(st.range(0));
+	state.SetItemsProcessed(state.range(0));
 }
 BENCHMARK_REGISTER_F(MyFixture, Bar)->Arg(42);
 BENCHMARK_REGISTER_F(MyFixture, Bar)->Arg(42)->ThreadPerCpu();
