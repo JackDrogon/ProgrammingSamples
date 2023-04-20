@@ -10,3 +10,6 @@ add_bench(intset_bench)
 add_bench(memcpy_by_sparse_range_bench)
 add_bench(intset_apply_bench)
 add_bench(fixture_usage)
+
+add_executable(cpu_timer_usage cpu_timer_usage.cc callee.cc)
+target_link_libraries(cpu_timer_usage benchmark::benchmark_main)
