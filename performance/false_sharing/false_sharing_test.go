@@ -3,6 +3,8 @@ package main
 import (
 	"sync/atomic"
 	"testing"
+
+	"golang.org/x/sys/cpu"
 )
 
 type NoPad struct {
@@ -19,11 +21,11 @@ func (np *NoPad) Increase() {
 
 type Pad struct {
 	a  uint64
-	_a [7]uint64
+	_a cpu.CacheLinePad
 	b  uint64
-	_b [7]uint64
+	_b cpu.CacheLinePad
 	c  uint64
-	_c [7]uint64
+	_c cpu.CacheLinePad
 }
 
 func (p *Pad) Increase() {
