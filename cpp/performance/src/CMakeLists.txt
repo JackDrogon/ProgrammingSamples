@@ -1,8 +1,11 @@
-# message("benchmark_INCLUDE_DIRS: ${benchmark_INCLUDE_DIRS} ${benchmark_INCLUDE_DIRECTORIES}")
-add_executable(visitor visitor.cc)
-# add_subdirectory(benchmark)
-# target_include_directories(visitor benchmark::benchmark)
-target_link_libraries(visitor benchmark::benchmark_main) # FIXME: 为什么会添加/usr/local/include
+function(add_bench exe_name)
+  add_executable(${exe_name} ${exe_name}.cc)
+  target_link_libraries(${exe_name} benchmark::benchmark_main)
+endfunction()
 
-add_executable(atomic atomic.cc)
-target_link_libraries(atomic benchmark::benchmark_main)
+set(FILE_LIST "visitor.cc;atomic.cc")
+
+foreach(file ${FILE_LIST})
+  get_filename_component(exe_name ${file} NAME_WE)
+  add_bench(${exe_name} ${file})
+endforeach()
