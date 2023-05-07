@@ -3,9 +3,7 @@ using namespace std;
 
 #include <benchmark/benchmark.h>
 
-// g++ -std=c++17 -lbenchmark -lbenchmark_main -o vtable vtable.cc
-// FIXME: 这里使用vtable 没有明显劣势
-
+// FIXME: 这里使用vtable 没有明显劣势, 应该是都是在Cache中了, check一下汇编
 class Base
 {
 public:

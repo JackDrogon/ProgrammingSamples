@@ -1,13 +1,15 @@
-#include <array>
-#include <variant>
-#include <random>
-#include <functional>
 #include <algorithm>
+#include <array>
+#include <functional>
+#include <random>
+#include <variant>
 
 #include <benchmark/benchmark.h>
 
 using namespace std;
 
+namespace
+{
 struct One {
 	auto get() const { return 1; }
 };
@@ -21,16 +23,18 @@ struct Four {
 	auto get() const { return 4; }
 };
 
-template<class... Ts> struct overload : Ts... { using Ts::operator()...; };
-template<class... Ts> overload(Ts...) -> overload<Ts...>;
-
+template <class... Ts> struct overload : Ts... {
+	using Ts::operator()...;
+};
+template <class... Ts> overload(Ts...) -> overload<Ts...>;
 
 std::random_device dev;
 std::mt19937 rng(dev());
-std::uniform_int_distribution<std::mt19937::result_type> random_pick(0,3); // distribution in range [1, 6]
+std::uniform_int_distribution<std::mt19937::result_type>
+    random_pick(0, 3); // distribution in range [1, 6]
 
-template <std::size_t N>
-std::array<int, N> get_random_array() {
+template <std::size_t N> std::array<int, N> get_random_array()
+{
 	std::array<int, N> item;
 	for (int i = 0; i < N; i++)
 		item[i] = random_pick(rng);
@@ -38,15 +42,18 @@ std::array<int, N> get_random_array() {
 }
 
 template <typename T, std::size_t N>
-std::array<T, N> get_random_objects(std::function<T(decltype(random_pick(rng)))> func) {
+std::array<T, N>
+get_random_objects(std::function<T(decltype(random_pick(rng)))> func)
+{
 	std::array<T, N> a;
 	std::generate(a.begin(), a.end(),
 		      [&] { return func(random_pick(rng)); });
 	return a;
 }
+} // namespace
 
-
-static void TradeSpaceForPerformance(benchmark::State& state) {
+static void TradeSpaceForPerformance(benchmark::State &state)
+{
 	One one;
 	Two two;
 	Three three;
@@ -62,7 +69,6 @@ static void TradeSpaceForPerformance(benchmark::State& state) {
 	pick_randomly();
 
 	for (auto _ : state) {
-
 		int res;
 		switch (index) {
 		case 0:
@@ -88,9 +94,8 @@ static void TradeSpaceForPerformance(benchmark::State& state) {
 // Register the function as a benchmark
 BENCHMARK(TradeSpaceForPerformance);
 
-
-static void Virtual(benchmark::State& state) {
-
+static void Virtual(benchmark::State &state)
+{
 	struct Base {
 		virtual int get() const noexcept = 0;
 		virtual ~Base() {}
@@ -136,7 +141,6 @@ static void Virtual(benchmark::State& state) {
 	pick_randomly();
 
 	for (auto _ : state) {
-
 		int res = package->get();
 
 		benchmark::DoNotOptimize(package);
@@ -145,15 +149,14 @@ static void Virtual(benchmark::State& state) {
 		pick_randomly();
 	}
 
-	for (auto &i : packages)
+	for (auto &i : packages) {
 		delete i;
+	}
 }
 BENCHMARK(Virtual);
 
-
-
-
-static void FunctionPointerList(benchmark::State& state) {
+static void FunctionPointer(benchmark::State &state)
+{
 	One one;
 	Two two;
 	Three three;
@@ -191,11 +194,10 @@ static void FunctionPointerList(benchmark::State& state) {
 		pick_randomly();
 	}
 }
-BENCHMARK(FunctionPointerList);
+BENCHMARK(FunctionPointer);
 
-
-
-static void Index(benchmark::State& state) {
+static void Index(benchmark::State &state)
+{
 	One one;
 	Two two;
 	Three three;
@@ -250,9 +252,8 @@ static void Index(benchmark::State& state) {
 }
 BENCHMARK(Index);
 
-
-
-static void GetIf(benchmark::State& state) {
+static void GetIf(benchmark::State &state)
+{
 	One one;
 	Two two;
 	Three three;
@@ -303,7 +304,8 @@ static void GetIf(benchmark::State& state) {
 }
 BENCHMARK(GetIf);
 
-static void HoldsAlternative(benchmark::State& state) {
+static void HoldsAlternative(benchmark::State &state)
+{
 	One one;
 	Two two;
 	Three three;
@@ -354,8 +356,8 @@ static void HoldsAlternative(benchmark::State& state) {
 }
 BENCHMARK(HoldsAlternative);
 
-
-static void ConstexprVisitor(benchmark::State& state) {
+static void ConstexprVisitor(benchmark::State &state)
+{
 	One one;
 	Two two;
 	Three three;
@@ -438,7 +440,8 @@ struct VisitPackage {
 	// auto operator()(Three const &r) { return r.get(); }
 	// auto operator()(Four const &r) { return r.get(); }
 };
-static void StructVisitor(benchmark::State& state) {
+static void StructVisitor(benchmark::State &state)
+{
 	// struct VisitPackage {
 	// 	auto operator()(One const &r) { return r.get(); }
 	// 	auto operator()(Two const &r) { return r.get(); }
@@ -478,7 +481,6 @@ static void StructVisitor(benchmark::State& state) {
 	auto vs = VisitPackage();
 
 	for (auto _ : state) {
-
 		auto res = std::visit(vs, *package);
 
 		benchmark::DoNotOptimize(package);
@@ -489,8 +491,8 @@ static void StructVisitor(benchmark::State& state) {
 }
 BENCHMARK(StructVisitor);
 
-
-static void Overload(benchmark::State& state) {
+static void Overload(benchmark::State &state)
+{
 	One one;
 	Two two;
 	Three three;
@@ -535,6 +537,3 @@ static void Overload(benchmark::State& state) {
 	}
 }
 BENCHMARK(Overload);
-
-
-// BENCHMARK_MAIN();
