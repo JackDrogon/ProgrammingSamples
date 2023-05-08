@@ -10,6 +10,11 @@ using namespace std;
 
 namespace
 {
+auto f1() { return 1; }
+auto f2() { return 2; }
+auto f3() { return 3; }
+auto f4() { return 4; }
+
 struct One {
 	auto get() const { return 1; }
 };
@@ -155,7 +160,7 @@ static void Virtual(benchmark::State &state)
 }
 BENCHMARK(Virtual);
 
-static void FunctionPointer(benchmark::State &state)
+static void FunctionObject(benchmark::State &state)
 {
 	One one;
 	Two two;
@@ -185,7 +190,42 @@ static void FunctionPointer(benchmark::State &state)
 	pick_randomly();
 
 	for (auto _ : state) {
+		int res = packages[index]();
 
+		benchmark::DoNotOptimize(index);
+		benchmark::DoNotOptimize(res);
+
+		pick_randomly();
+	}
+}
+BENCHMARK(FunctionObject);
+
+static void FunctionPointer(benchmark::State &state)
+{
+	using type = int (*)();
+	std::size_t index;
+
+	auto packages = get_random_objects<type, 50>([&](auto r) -> type {
+		switch (r) {
+		case 0:
+			return f1;
+		case 1:
+			return f2;
+		case 2:
+			return f3;
+		case 3:
+			return f4;
+		default:
+			return f3;
+		}
+	});
+	int r = 0;
+
+	auto pick_randomly = [&]() { index = r++ % packages.size(); };
+
+	pick_randomly();
+
+	for (auto _ : state) {
 		int res = packages[index]();
 
 		benchmark::DoNotOptimize(index);
@@ -284,7 +324,6 @@ static void GetIf(benchmark::State &state)
 	pick_randomly();
 
 	for (auto _ : state) {
-
 		int res;
 		if (auto item = std::get_if<One>(package)) {
 			res = item->get();
