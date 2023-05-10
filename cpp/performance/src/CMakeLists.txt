@@ -4,8 +4,8 @@ function(add_bench exe_name)
 endfunction()
 
 set(FILE_LIST
-    visitor_bench.cc
     atomic_bench.cc
+    polymorphism_bench.cc
     vtable_bench.cc
 )
 
