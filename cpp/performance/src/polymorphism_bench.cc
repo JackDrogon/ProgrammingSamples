@@ -446,18 +446,6 @@ static void ConstexprVisitor(benchmark::State &state)
 		auto res = std::visit(
 		    [](auto const &ref) {
 			    return ref.get();
-			    // using type = std::decay_t<decltype(ref)>;
-			    // if constexpr (std::is_same_v<type, One>) {
-			    // return ref.get();
-			    // } else if constexpr (std::is_same_v<type, Two>) {
-			    // return ref.get();
-			    // } else if constexpr (std::is_same_v<type, Three>)
-			    // { return ref.get();
-			    // } else if constexpr (std::is_same_v<type, Four>)
-			    // { return ref.get();
-			    // } else {
-			    // return 0;
-			    // }
 		    },
 		    *package);
 
@@ -481,13 +469,6 @@ struct VisitPackage {
 };
 static void StructVisitor(benchmark::State &state)
 {
-	// struct VisitPackage {
-	// 	auto operator()(One const &r) { return r.get(); }
-	// 	auto operator()(Two const &r) { return r.get(); }
-	// 	auto operator()(Three const &r) { return r.get(); }
-	// 	auto operator()(Four const &r) { return r.get(); }
-	// };
-
 	One one;
 	Two two;
 	Three three;
