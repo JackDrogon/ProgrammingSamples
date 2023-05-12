@@ -41,8 +41,9 @@ std::uniform_int_distribution<std::mt19937::result_type>
 template <std::size_t N> std::array<int, N> get_random_array()
 {
 	std::array<int, N> item;
-	for (int i = 0; i < N; i++)
+	for (size_t i = 0; i < N; i++) {
 		item[i] = random_pick(rng);
+	}
 	return item;
 }
 
@@ -67,7 +68,7 @@ static void TradeSpaceForPerformance(benchmark::State &state)
 	int index = 0;
 
 	auto ran_arr = get_random_array<50>();
-	int r = 0;
+	size_t r = 0;
 
 	auto pick_randomly = [&]() { index = ran_arr[r++ % ran_arr.size()]; };
 
@@ -123,7 +124,7 @@ static void Virtual(benchmark::State &state)
 	};
 
 	Base *package = nullptr;
-	int r = 0;
+	size_t r = 0;
 	auto packages = get_random_objects<Base *, 50>([&](auto r) -> Base * {
 		switch (r) {
 		case 0:
@@ -183,7 +184,7 @@ static void FunctionObject(benchmark::State &state)
 			return std::bind(&Three::get, three);
 		}
 	});
-	int r = 0;
+	size_t r = 0;
 
 	auto pick_randomly = [&]() { index = r++ % packages.size(); };
 
@@ -219,7 +220,7 @@ static void FunctionPointer(benchmark::State &state)
 			return f3;
 		}
 	});
-	int r = 0;
+	size_t r = 0;
 
 	auto pick_randomly = [&]() { index = r++ % packages.size(); };
 
@@ -259,7 +260,7 @@ static void Index(benchmark::State &state)
 			return three;
 		}
 	});
-	int r = 0;
+	size_t r = 0;
 
 	auto pick_randomly = [&]() {
 		package = &packages[r++ % packages.size()];
@@ -315,7 +316,7 @@ static void GetIf(benchmark::State &state)
 			return three;
 		}
 	});
-	int r = 0;
+	size_t r = 0;
 
 	auto pick_randomly = [&]() {
 		package = &packages[r++ % packages.size()];
@@ -366,7 +367,7 @@ static void HoldsAlternative(benchmark::State &state)
 			return three;
 		}
 	});
-	int r = 0;
+	size_t r = 0;
 
 	auto pick_randomly = [&]() {
 		package = &packages[r++ % packages.size()];
@@ -374,9 +375,8 @@ static void HoldsAlternative(benchmark::State &state)
 
 	pick_randomly();
 
+	int res;
 	for (auto _ : state) {
-
-		int res;
 		if (std::holds_alternative<One>(*package)) {
 			res = std::get<One>(*package).get();
 		} else if (std::holds_alternative<Two>(*package)) {
@@ -418,7 +418,7 @@ static void ConstexprVisitor(benchmark::State &state)
 			return three;
 		}
 	});
-	int r = 0;
+	size_t r = 0;
 
 	auto pick_randomly = [&]() {
 		package = &packages[r++ % packages.size()];
@@ -490,7 +490,7 @@ static void StructVisitor(benchmark::State &state)
 			return three;
 		}
 	});
-	int r = 0;
+	size_t r = 0;
 
 	auto pick_randomly = [&]() {
 		package = &packages[r++ % packages.size()];
@@ -534,7 +534,7 @@ static void Overload(benchmark::State &state)
 			return three;
 		}
 	});
-	int r = 0;
+	size_t r = 0;
 
 	auto pick_randomly = [&]() {
 		package = &packages[r++ % packages.size()];
