@@ -169,7 +169,7 @@ static void Virtual(benchmark::State &state)
 }
 BENCHMARK(Virtual);
 
-static void FunctionObject(benchmark::State &state)
+static void FunctionObjectBind(benchmark::State &state)
 {
 	One one;
 	Two two;
@@ -207,7 +207,47 @@ static void FunctionObject(benchmark::State &state)
 		pick_randomly();
 	}
 }
-BENCHMARK(FunctionObject);
+BENCHMARK(FunctionObjectBind);
+
+static void FunctionObjectLambda(benchmark::State &state)
+{
+	One one;
+	Two two;
+	Three three;
+	Four four;
+	using type = std::function<int()>;
+
+	auto packages = get_random_objects<type, 50>([&](auto v) -> type {
+		switch (v) {
+		case 0:
+			return [&one] { return one.get(); };
+		case 1:
+			return [&two] { return two.get(); };
+		case 2:
+			return [&three] { return three.get(); };
+		case 3:
+			return [&four] { return four.get(); };
+		default:
+			return [&three] { return three.get(); };
+		}
+	});
+	size_t r = 0;
+
+	std::size_t index;
+	auto pick_randomly = [&]() { index = r++ % packages.size(); };
+
+	pick_randomly();
+
+	for (auto _ : state) {
+		int res = packages[index]();
+
+		benchmark::DoNotOptimize(index);
+		benchmark::DoNotOptimize(res);
+
+		pick_randomly();
+	}
+}
+BENCHMARK(FunctionObjectLambda);
 
 static void FunctionPointer(benchmark::State &state)
 {
