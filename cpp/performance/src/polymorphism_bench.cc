@@ -8,6 +8,14 @@
 
 using namespace std;
 
+#if defined(__clang__)
+#define NO_DESTROY [[clang::no_destroy]]
+#elif defined(__GNUC__)
+#define NO_DESTROY __attribute__((__no_destroy__))
+#else
+#define NO_DESTROY
+#endif
+
 namespace
 {
 auto f1() { return 1; }
@@ -33,9 +41,9 @@ template <class... Ts> struct overload : Ts... {
 };
 template <class... Ts> overload(Ts...) -> overload<Ts...>;
 
-std::random_device dev;
-std::mt19937 rng(dev());
-std::uniform_int_distribution<std::mt19937::result_type>
+NO_DESTROY std::random_device dev;
+NO_DESTROY std::mt19937 rng(dev());
+NO_DESTROY std::uniform_int_distribution<int>
     random_pick(0, 3); // distribution in range [1, 6]
 
 template <std::size_t N> std::array<int, N> get_random_array()
@@ -125,8 +133,8 @@ static void Virtual(benchmark::State &state)
 
 	Base *package = nullptr;
 	size_t r = 0;
-	auto packages = get_random_objects<Base *, 50>([&](auto r) -> Base * {
-		switch (r) {
+	auto packages = get_random_objects<Base *, 50>([&](auto v) -> Base * {
+		switch (v) {
 		case 0:
 			return new A;
 		case 1:
@@ -170,8 +178,8 @@ static void FunctionObject(benchmark::State &state)
 	using type = std::function<int()>;
 	std::size_t index;
 
-	auto packages = get_random_objects<type, 50>([&](auto r) -> type {
-		switch (r) {
+	auto packages = get_random_objects<type, 50>([&](auto v) -> type {
+		switch (v) {
 		case 0:
 			return std::bind(&One::get, one);
 		case 1:
@@ -206,8 +214,8 @@ static void FunctionPointer(benchmark::State &state)
 	using type = int (*)();
 	std::size_t index;
 
-	auto packages = get_random_objects<type, 50>([&](auto r) -> type {
-		switch (r) {
+	auto packages = get_random_objects<type, 50>([&](auto v) -> type {
+		switch (v) {
 		case 0:
 			return f1;
 		case 1:
@@ -246,8 +254,8 @@ static void Index(benchmark::State &state)
 	using type = std::variant<One, Two, Three, Four>;
 	type *package = nullptr;
 
-	auto packages = get_random_objects<type, 50>([&](auto r) -> type {
-		switch (r) {
+	auto packages = get_random_objects<type, 50>([&](auto v) -> type {
+		switch (v) {
 		case 0:
 			return one;
 		case 1:
@@ -302,8 +310,8 @@ static void GetIf(benchmark::State &state)
 	using type = std::variant<One, Two, Three, Four>;
 	type *package = nullptr;
 
-	auto packages = get_random_objects<type, 50>([&](auto r) -> type {
-		switch (r) {
+	auto packages = get_random_objects<type, 50>([&](auto v) -> type {
+		switch (v) {
 		case 0:
 			return one;
 		case 1:
@@ -326,14 +334,14 @@ static void GetIf(benchmark::State &state)
 
 	for (auto _ : state) {
 		int res;
-		if (auto item = std::get_if<One>(package)) {
-			res = item->get();
-		} else if (auto item = std::get_if<Two>(package)) {
-			res = item->get();
-		} else if (auto item = std::get_if<Three>(package)) {
-			res = item->get();
-		} else if (auto item = std::get_if<Four>(package)) {
-			res = item->get();
+		if (auto one_item = std::get_if<One>(package)) {
+			res = one_item->get();
+		} else if (auto two_item = std::get_if<Two>(package)) {
+			res = two_item->get();
+		} else if (auto three_item = std::get_if<Three>(package)) {
+			res = three_item->get();
+		} else if (auto four_item = std::get_if<Four>(package)) {
+			res = four_item->get();
 		}
 
 		benchmark::DoNotOptimize(package);
@@ -353,8 +361,8 @@ static void HoldsAlternative(benchmark::State &state)
 	using type = std::variant<One, Two, Three, Four>;
 	type *package = nullptr;
 
-	auto packages = get_random_objects<type, 50>([&](auto r) -> type {
-		switch (r) {
+	auto packages = get_random_objects<type, 50>([&](auto v) -> type {
+		switch (v) {
 		case 0:
 			return one;
 		case 1:
@@ -404,8 +412,8 @@ static void ConstexprVisitor(benchmark::State &state)
 	using type = std::variant<One, Two, Three, Four>;
 	type *package = nullptr;
 
-	auto packages = get_random_objects<type, 50>([&](auto r) -> type {
-		switch (r) {
+	auto packages = get_random_objects<type, 50>([&](auto v) -> type {
+		switch (v) {
 		case 0:
 			return one;
 		case 1:
@@ -458,14 +466,14 @@ static void ConstexprVisitor(benchmark::State &state)
 BENCHMARK(ConstexprVisitor);
 
 struct VisitPackage {
-	template <typename Type> auto operator()(Type const &r)
+	template <typename Type> auto operator()(Type const &v)
 	{
-		return r.get();
+		return v.get();
 	}
-	// auto operator()(One const &r) { return r.get(); }
-	// auto operator()(Two const &r) { return r.get(); }
-	// auto operator()(Three const &r) { return r.get(); }
-	// auto operator()(Four const &r) { return r.get(); }
+	// auto operator()(One const &v) { return v.get(); }
+	// auto operator()(Two const &v) { return v.get(); }
+	// auto operator()(Three const &v) { return v.get(); }
+	// auto operator()(Four const &v) { return v.get(); }
 };
 static void StructVisitor(benchmark::State &state)
 {
@@ -476,8 +484,8 @@ static void StructVisitor(benchmark::State &state)
 	using type = std::variant<One, Two, Three, Four>;
 	type *package = nullptr;
 
-	auto packages = get_random_objects<type, 50>([&](auto r) -> type {
-		switch (r) {
+	auto packages = get_random_objects<type, 50>([&](auto v) -> type {
+		switch (v) {
 		case 0:
 			return one;
 		case 1:
@@ -520,8 +528,8 @@ static void Overload(benchmark::State &state)
 	using type = std::variant<One, Two, Three, Four>;
 	type *package = nullptr;
 
-	auto packages = get_random_objects<type, 50>([&](auto r) -> type {
-		switch (r) {
+	auto packages = get_random_objects<type, 50>([&](auto v) -> type {
+		switch (v) {
 		case 0:
 			return one;
 		case 1:
@@ -542,10 +550,10 @@ static void Overload(benchmark::State &state)
 
 	pick_randomly();
 
-	auto ov = overload{[](One const &r) { return r.get(); },
-			   [](Two const &r) { return r.get(); },
-			   [](Three const &r) { return r.get(); },
-			   [](Four const &r) { return r.get(); }};
+	auto ov = overload{[](One const &v) { return v.get(); },
+			   [](Two const &v) { return v.get(); },
+			   [](Three const &v) { return v.get(); },
+			   [](Four const &v) { return v.get(); }};
 
 	for (auto _ : state) {
 		auto res = std::visit(ov, *package);
