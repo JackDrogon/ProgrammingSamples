@@ -1,13 +1,16 @@
+# set(FILE_LIST
+#   fmt_color.cc
+#   fmt_error.cc
+#   fmt_memory_buffer_sample.cc
+#   fmt_ptr.cc
+#   fmt_range.cc
+#   fmt_sample.cc
+#   fmt_spec.cc
+#   format-int-benchmark.cc
+#   fmt_str.cc
+# )
 set(FILE_LIST
-  fast_format.cc
-  fmt_color.cc
-  fmt_error.cc
-  fmt_memory_buffer_sample.cc
-  fmt_ptr.cc
-  fmt_range.cc
-  fmt_sample.cc
-  fmt_spec.cc
-  format-int-benchmark.cc
+  fmt_str.cc
 )
 
 foreach(file ${FILE_LIST})

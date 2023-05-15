@@ -21,7 +21,7 @@ include (cmake/ccache.cmake)
 
 # add dependencies
 include(cmake/CPM.cmake)
-CPMAddPackage("gh:fmtlib/fmt#9.1.0")
+CPMAddPackage("gh:fmtlib/fmt#10.1.0")
 if(fmt_ADDED)
 	 set_property(DIRECTORY ${fmt_SOURCE_DIR} PROPERTY EXCLUDE_FROM_ALL YES)
 endif()
