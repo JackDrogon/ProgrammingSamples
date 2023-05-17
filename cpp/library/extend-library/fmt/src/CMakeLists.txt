@@ -11,6 +11,7 @@
 # )
 set(FILE_LIST
   fmt_str.cc
+  fmt_literals.cc
 )
 
 foreach(file ${FILE_LIST})
