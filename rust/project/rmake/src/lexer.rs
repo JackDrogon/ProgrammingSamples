@@ -1,3 +1,4 @@
+use std::collections::VecDeque;
 use std::fs;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -19,7 +20,7 @@ pub(crate) enum Token {
 pub(crate) struct Lexer {
     env: String,
     rmakefile: String,
-    data: Vec<String>,
+    data: VecDeque<String>,
 }
 
 impl Lexer {
@@ -28,13 +29,13 @@ impl Lexer {
         let mut lexer = Lexer {
             env,
             rmakefile,
-            data: vec![],
+            data: VecDeque::new(),
         };
 
         let file = fs::File::open(&lexer.rmakefile).unwrap();
         let reader = BufReader::new(file);
         for line in reader.lines() {
-            lexer.data.push(line.unwrap());
+            lexer.data.push_back(line.unwrap());
         }
         return lexer;
     }
@@ -45,7 +46,7 @@ impl Lexer {
             return Token::Eof;
         }
 
-        let line = self.data.remove(0).trim_end().to_string();
+        let line = self.data.pop_front().unwrap().trim_end().to_string();
         if line.is_empty() {
             self.next()
         } else if line.starts_with("\t") {
