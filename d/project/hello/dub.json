@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"JackDrogon"
+	],
+	"copyright": "Copyright © 2020, JackDrogon",
+	"description": "A minimal D application.",
+	"license": "proprietary",
+	"name": "hello"
+}
