@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 # set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g3 -ggdb -fno-omit-frame-pointer")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g3 -ggdb -fno-omit-frame-pointer -flto")
+add_compile_options(-Weverything -Wno-c++98-compat -Wno-global-constructors)
 
 include(FeatureSummary)
 
