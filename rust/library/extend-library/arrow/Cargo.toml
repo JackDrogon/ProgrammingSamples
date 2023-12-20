@@ -9,6 +9,10 @@ edition = "2021"
 name = "record_batch"
 path = "src/bin/record_batch.rs"
 
+[[bin]]
+name = "data_type"
+path = "src/bin/data_type.rs"
+
 [dependencies]
 arrow-array = "49.0.0"
 arrow-schema = "49.0.0"
