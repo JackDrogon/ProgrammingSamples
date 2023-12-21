@@ -1,2 +1,2 @@
 #!/bin/sh
-g++ coroutine.cc -lboost_coroutine -lboost_system
+g++ coroutine.cc -L/home/linuxbrew/.linuxbrew/lib -lboost_coroutine -lboost_context-mt -lboost_system -static

@@ -1,8 +1,8 @@
-#include <boost/coroutine/all.hpp>
 #include <iostream>
 
-typedef boost::coroutines::asymmetric_coroutine<void>::pull_type pull_coro_t;
-typedef boost::coroutines::asymmetric_coroutine<void>::push_type push_coro_t;
+#include <boost/coroutine/all.hpp>
+using pull_coro_t = boost::coroutines::asymmetric_coroutine<void>::pull_type;
+using push_coro_t = boost::coroutines::asymmetric_coroutine<void>::push_type;
 
 void foo(push_coro_t &sink)
 {
