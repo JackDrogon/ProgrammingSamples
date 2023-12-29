@@ -6,5 +6,8 @@ LDFLAGS = -L/home/linuxbrew/.linuxbrew/lib -lboost_context-mt -lboost_system -st
 fibonacci_for_range: fibonacci_for_range.cc
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
+fibonacci_bool_convert: fibonacci_bool_convert.cc
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
 clean:
-	rm -f fibonacci_for_range
+	rm -f fibonacci_for_range fibonacci_bool_convert
