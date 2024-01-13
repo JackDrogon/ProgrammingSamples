@@ -3,4 +3,5 @@
 filename=$1
 binfile=${filename%.*}
 
-g++ -std=c++17 -lbenchmark -lbenchmark_main -o $binfile $filename
+# clang++ -std=c++20 -O3 -I /home/linuxbrew/.linuxbrew/include -L /home/linuxbrew/.linuxbrew/lib -lbenchmark_main -lbenchmark -o $binfile $filename -g
+g++-13 -std=c++20 -O3 -I /home/linuxbrew/.linuxbrew/include -L /home/linuxbrew/.linuxbrew/lib -lbenchmark_main -lbenchmark -o $binfile $filename -g -mavx2

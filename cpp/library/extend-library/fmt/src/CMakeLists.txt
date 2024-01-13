@@ -1,7 +1,6 @@
 # set(FILE_LIST
 #   fmt_color.cc
 #   fmt_error.cc
-#   fmt_memory_buffer_sample.cc
 #   fmt_ptr.cc
 #   fmt_range.cc
 #   fmt_sample.cc
@@ -12,6 +11,8 @@
 set(FILE_LIST
   fmt_str.cc
   fmt_literals.cc
+  fmt_memory_buffer_sample.cc
+  fmt_check_args_num.cc
 )
 
 foreach(file ${FILE_LIST})

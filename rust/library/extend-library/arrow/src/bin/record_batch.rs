@@ -7,5 +7,7 @@ fn main() {
     let schema = Schema::new(vec![Field::new("id", id_array.data_type().clone(), false)]);
 
     let batch = RecordBatch::try_new(Arc::new(schema), vec![Arc::new(id_array)]).unwrap();
-    println!("{:?}", batch)
+    println!("{:?}", batch);
+
+    assert_eq!(batch.num_rows(), 5);
 }
