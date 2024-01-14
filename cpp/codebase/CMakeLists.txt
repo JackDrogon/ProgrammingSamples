@@ -32,5 +32,4 @@ list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
 include(CTest)
 include(Catch)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-add_subdirectory(src)
+add_subdirectory(archimedes)
