@@ -22,14 +22,17 @@ include(cmake/CPM.cmake)
 # 	VERSION 1.5.3
 # 	OPTIONS "BENCHMARK_ENABLE_TESTING Off"
 # )
-CPMAddPackage("gh:catchorg/Catch2@3.0.0-preview5")
 
-# Catch2_SOURCE_DIR
-message(${Catch2_SOURCE_DIR}/extras)
-list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
+# Test option
+option(ARCHIMEDES_BUILD_TESTING "Build the archimedes testing tree." OFF)
+if (ARCHIMEDES_BUILD_TESTING)
+    CPMAddPackage("gh:catchorg/Catch2@3.0.0-preview5")
+    # Catch2_SOURCE_DIR
+    message(${Catch2_SOURCE_DIR}/extras)
+    list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
 
-
-include(CTest)
-include(Catch)
+    include(CTest)
+    include(Catch)
+endif()
 
 add_subdirectory(archimedes)
