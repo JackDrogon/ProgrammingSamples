@@ -35,4 +35,10 @@ if (ARCHIMEDES_BUILD_TESTING)
     include(Catch)
 endif()
 
+# Examples option
+option(ARCHIMEDES_BUILD_EXAMPLES "Build the archimedes examples tree." OFF)
+if (ARCHIMEDES_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+
 add_subdirectory(archimedes)
