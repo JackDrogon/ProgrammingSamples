@@ -1,4 +1,4 @@
-#include "common/defer.hh"
+#include "archimedes/common/defer.hh"
 
 #include <catch2/catch_all.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -7,7 +7,7 @@ TEST_CASE("defer lambda")
 {
 	int n = 0;
 	{
-		defer[&n] { ++n; };
+		DEFER[&n] { ++n; };
 	}
 	REQUIRE(n == 1);
 }
@@ -35,8 +35,8 @@ TEST_CASE("defer operator()")
 	{
 		//! 这里是copy 所以下面的n不变，针对move和copy 进行重载 &&
 		//! check callable, static_assert
-		defer s; // not s(), s is callable
-		defer S(n);
+		DEFER s; // not s(), s is callable
+		DEFER S(n);
 	}
 	REQUIRE(n == 2);
 }

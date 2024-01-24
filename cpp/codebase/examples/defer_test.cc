@@ -1,4 +1,4 @@
-#include "common/defer.hh"
+#include "archimedes/common/defer.hh"
 
 #include <functional>
 #include <iostream>
@@ -12,25 +12,25 @@ void valid()
 	int n = 0;
 	cout << "Before defer: n = " << n << endl;
 	{
-		defer[&n] { ++n; };
+		DEFER[&n] { ++n; };
 	}
 	cout << "After defer: n = " << n << endl;
 }
 
 void check_lambda()
 {
-	defer[] { cout << "defer lambda call" << endl; };
+	DEFER[] { cout << "defer lambda call" << endl; };
 }
 
 void bind_f() { cout << "defer bind_f call" << endl; }
-void check_bind() { defer bind(bind_f); }
+void check_bind() { DEFER bind(bind_f); }
 
 void check_opeator()
 {
 	struct S {
 		void operator()() { cout << "defer operator() call" << endl; }
 	};
-	defer S();
+	DEFER S();
 }
 
 void check_scope_exit()

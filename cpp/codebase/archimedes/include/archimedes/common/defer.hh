@@ -34,12 +34,12 @@ struct DeferKeywordWrapper {
 
 } // namespace archimedes::common
 
-#define DEFER_CONCAT(a, b, c) a##_##b##_##c
-#define DEFER(line, counter)                                                   \
-	auto DEFER_CONCAT(_defer, line, counter) =                             \
+#define DEFER_IMPL_CONCAT(a, b, c) a##_##b##_##c
+#define DEFER_IMPL(line, counter)                                              \
+	auto DEFER_IMPL_CONCAT(_defer, line, counter) =                        \
 	    archimedes::common::DeferKeywordWrapper() <<
-#define defer DEFER(__LINE__, __COUNTER__)
+#define DEFER DEFER_IMPL(__LINE__, __COUNTER__)
 
 // clang-format off
-#define SCOPE_EXIT DEFER(__LINE__, __COUNTER__) [&]
+#define SCOPE_EXIT DEFER_IMPL(__LINE__, __COUNTER__) [&]
 // clang-format on
