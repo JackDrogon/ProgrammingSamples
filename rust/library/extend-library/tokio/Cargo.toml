@@ -3,5 +3,13 @@ name = "tokio-ex"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "hello"
+path = "bin/hello/main.rs"
+
+[[bin]]
+name = "hello-expanded"
+path = "bin/hello-expanded/main.rs"
+
 [dependencies]
 tokio = {version = "1.37.0", features = ["full"]}
