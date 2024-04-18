@@ -11,5 +11,9 @@ path = "bin/hello/main.rs"
 name = "hello-expanded"
 path = "bin/hello-expanded/main.rs"
 
+[[bin]]
+name = "hello-single-thread"
+path = "bin/hello-single-thread/main.rs"
+
 [dependencies]
 tokio = {version = "1.37.0", features = ["full"]}
