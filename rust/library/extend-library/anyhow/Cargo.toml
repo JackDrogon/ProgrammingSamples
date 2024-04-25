@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [[bin]]
+name = "hello"
+path = "src/hello.rs"
+
+[[bin]]
 name = "context"
 path = "src/context.rs"
 
