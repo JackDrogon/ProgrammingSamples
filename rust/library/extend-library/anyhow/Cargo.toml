@@ -11,6 +11,10 @@ path = "src/hello.rs"
 name = "context"
 path = "src/context.rs"
 
+[[bin]]
+name = "macro"
+path = "src/macro.rs"
+
 [dependencies]
 anyhow = "1.0"
 serde = {version = "1.0.203", features = ["derive"]}
