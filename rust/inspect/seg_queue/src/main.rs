@@ -75,6 +75,7 @@ fn mpmc() {
 
         for _ in 0..THREADS {
             scope.spawn(|_| {
+                for _ in 0..MESSAGES / THREADS {
                     println!("thread id: {:?}", thread::current().id());
                     loop {
                         if q.pop().is_none() {
